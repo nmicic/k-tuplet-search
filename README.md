@@ -199,7 +199,7 @@ python3 tools/gen_pattern_header.py     # regenerate src/common/ktuplet_pattern.
 | `docs/` | Design notes and pattern-tool documentation |
 | `known/` | Known-record corpus (`records.json`) |
 | `longevity_gpu/` | Remote GPU longevity-run scripts |
-| `visualizations/` | Interactive k-tuplet analyzer |
+| `visualizations/` | Interactive k-tuplet analyzer ([GitHub Pages](https://nmicic.github.io/k-tuplet-search/visualizations/k-tuplet-analyzer/index.html)) |
 
 ## Quick Links
 
@@ -217,6 +217,7 @@ python3 tools/gen_pattern_header.py     # regenerate src/common/ktuplet_pattern.
 | GP library guide | [`gp/HOWTO_kt_lib_v1.md`](gp/HOWTO_kt_lib_v1.md) |
 | Record corpus | [`known/records.json`](known/records.json) |
 | Record manifest | [`tools/records_manifest.tsv`](tools/records_manifest.tsv) |
+| Interactive analyzer | [GitHub Pages](https://nmicic.github.io/k-tuplet-search/visualizations/k-tuplet-analyzer/index.html) / [`visualizations/k-tuplet-analyzer/index.html`](visualizations/k-tuplet-analyzer/index.html) |
 | GPU HOWTO | [`HOWTO.md`](HOWTO.md) |
 | Testing and benchmarks | [`TESTING.md`](TESTING.md) |
 
