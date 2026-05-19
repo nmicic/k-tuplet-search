@@ -1,0 +1,286 @@
+{
+  "meta": {
+    "binary": "(synthetic baseline)",
+    "cal_json": "tools/kpi_fixtures/fixture_e_top_half.calibration.json",
+    "repeats": 3,
+    "n_records": 10,
+    "n_pass": 10,
+    "n_fail": 0,
+    "suite_geomean_ttr_s": 1.0,
+    "synthetic": true,
+    "generated_at": "2026-05-10T00:00:00Z",
+    "fixture_purpose": "fixture_e_top_half_baseline"
+  },
+  "records": [
+    {
+      "suite_id": "E00",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8000",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8000"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E01",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8001",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8001"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E02",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8002",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8002"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E03",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8003",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8003"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E04",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8004",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8004"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E05",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8005",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8005"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E06",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8006",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8006"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E07",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8007",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8007"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E08",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8008",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8008"
+          ]
+        }
+      ]
+    },
+    {
+      "suite_id": "E09",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "bits": 66,
+      "prefix_str": "0b101001",
+      "prefix_bits": 6,
+      "base_dec": "8009",
+      "median_ttr_s": 1.0,
+      "rel_std": 0.0,
+      "within_record_rsd_pct": 0.0,
+      "notfound": false,
+      "repeats": [
+        {
+          "rep": 1,
+          "elapsed_s": 1.0,
+          "ttr_s": 1.0,
+          "hits": 1,
+          "status": "OK",
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8009"
+          ]
+        }
+      ]
+    }
+  ]
+}

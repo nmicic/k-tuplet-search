@@ -1,0 +1,563 @@
+{
+  "meta": {
+    "binary": "(synthetic)",
+    "suite_tsv": "tools/kpi_fixtures/fixture_e_top_half.calibration.json",
+    "target_s": 30.0,
+    "n_records": 10,
+    "n_missing": 0,
+    "generated_at": "2026-05-10T00:00:00Z",
+    "fixture_purpose": "fixture_e_top_half"
+  },
+  "records": [
+    {
+      "suite_id": "E00",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8000",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8000"
+          ],
+          "kpi_target_base": "8000"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8000"
+          ],
+          "kpi_target_base": "8000"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8000"
+          ],
+          "kpi_target_base": "8000"
+        }
+      ]
+    },
+    {
+      "suite_id": "E01",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8001",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8001"
+          ],
+          "kpi_target_base": "8001"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8001"
+          ],
+          "kpi_target_base": "8001"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8001"
+          ],
+          "kpi_target_base": "8001"
+        }
+      ]
+    },
+    {
+      "suite_id": "E02",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8002",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8002"
+          ],
+          "kpi_target_base": "8002"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8002"
+          ],
+          "kpi_target_base": "8002"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8002"
+          ],
+          "kpi_target_base": "8002"
+        }
+      ]
+    },
+    {
+      "suite_id": "E03",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8003",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8003"
+          ],
+          "kpi_target_base": "8003"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8003"
+          ],
+          "kpi_target_base": "8003"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8003"
+          ],
+          "kpi_target_base": "8003"
+        }
+      ]
+    },
+    {
+      "suite_id": "E04",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8004",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8004"
+          ],
+          "kpi_target_base": "8004"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8004"
+          ],
+          "kpi_target_base": "8004"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8004"
+          ],
+          "kpi_target_base": "8004"
+        }
+      ]
+    },
+    {
+      "suite_id": "E05",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8005",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8005"
+          ],
+          "kpi_target_base": "8005"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8005"
+          ],
+          "kpi_target_base": "8005"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8005"
+          ],
+          "kpi_target_base": "8005"
+        }
+      ]
+    },
+    {
+      "suite_id": "E06",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8006",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8006"
+          ],
+          "kpi_target_base": "8006"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8006"
+          ],
+          "kpi_target_base": "8006"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.05,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8006"
+          ],
+          "kpi_target_base": "8006"
+        }
+      ]
+    },
+    {
+      "suite_id": "E07",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8007",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8007"
+          ],
+          "kpi_target_base": "8007"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8007"
+          ],
+          "kpi_target_base": "8007"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8007"
+          ],
+          "kpi_target_base": "8007"
+        }
+      ]
+    },
+    {
+      "suite_id": "E08",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8008",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8008"
+          ],
+          "kpi_target_base": "8008"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8008"
+          ],
+          "kpi_target_base": "8008"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8008"
+          ],
+          "kpi_target_base": "8008"
+        }
+      ]
+    },
+    {
+      "suite_id": "E09",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "8009",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8009"
+          ],
+          "kpi_target_base": "8009"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8009"
+          ],
+          "kpi_target_base": "8009"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.95,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "8009"
+          ],
+          "kpi_target_base": "8009"
+        }
+      ]
+    }
+  ]
+}

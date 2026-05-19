@@ -1,0 +1,12 @@
+{
+  "k": 3,
+  "diameter": 6,
+  "canonical_only": true,
+  "total_count": 1,
+  "elapsed_s": 0.000,
+  "threads": 8,
+  "tool": "pattern_enum.c v1.1",
+  "patterns": [
+    {"offsets": [0, 2, 6], "name_suggestion": "KT3_P0"}
+  ]
+}

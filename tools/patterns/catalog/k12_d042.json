@@ -1,0 +1,12 @@
+{
+  "k": 12,
+  "diameter": 42,
+  "canonical_only": true,
+  "total_count": 1,
+  "elapsed_s": 0.000,
+  "threads": 8,
+  "tool": "pattern_enum.c v1.1",
+  "patterns": [
+    {"offsets": [0, 2, 6, 8, 12, 18, 20, 26, 30, 32, 36, 42], "name_suggestion": "KT12_P0"}
+  ]
+}

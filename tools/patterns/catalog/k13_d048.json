@@ -1,0 +1,14 @@
+{
+  "k": 13,
+  "diameter": 48,
+  "canonical_only": true,
+  "total_count": 3,
+  "elapsed_s": 0.001,
+  "threads": 8,
+  "tool": "pattern_enum.c v1.1",
+  "patterns": [
+    {"offsets": [0, 2, 6, 8, 12, 18, 20, 26, 30, 32, 36, 42, 48], "name_suggestion": "KT13_P0"},
+    {"offsets": [0, 2, 8, 14, 18, 20, 24, 30, 32, 38, 42, 44, 48], "name_suggestion": "KT13_P1"},
+    {"offsets": [0, 2, 12, 14, 18, 20, 24, 30, 32, 38, 42, 44, 48], "name_suggestion": "KT13_P2"}
+  ]
+}

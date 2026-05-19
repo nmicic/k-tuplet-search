@@ -1,0 +1,35 @@
+src/cpu/kt_search
+tmp/
+__pycache__/
+*.pyc
+tools/patterns/pattern_enum
+
+# build artifacts
+*.o
+*.so
+*.a
+
+# compiled CUDA binaries (sources are .cu)
+src/cuda/kt_filter
+src/cuda/kt_filter_v5
+src/cuda/kt_filter_v6
+src/cuda/kt_filter_v7
+src/cuda/kt_filter_v8
+src/cuda/kt_filter_v8_*
+src/cuda/kt_filter_v8_s5
+
+# soak test outputs / runtime artifacts
+tests/soak_artifacts/
+scripts/longevity_gpu/runs/
+longevity_gpu/scripts/runs/
+novel_records*.jsonl
+*.ckpt
+
+# generated benchmark / observability outputs
+bench/
+
+# Claude Code session state
+.claude/
+
+# Ephemeral review reports (delete after reading)
+report_prior_publish.md

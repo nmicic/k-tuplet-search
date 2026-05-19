@@ -1,0 +1,1289 @@
+{
+  "meta": {
+    "binary": "(synthetic)",
+    "suite_tsv": "tools/kpi_fixtures/fixture_pass.calibration.json",
+    "target_s": 30.0,
+    "n_records": 22,
+    "n_missing": 0,
+    "generated_at": "2026-05-10T00:00:00Z",
+    "fixture_purpose": "fixture_pass"
+  },
+  "records": [
+    {
+      "suite_id": "P00",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9000",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.021,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9000"
+          ],
+          "kpi_target_base": "9000",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.009,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9000"
+          ],
+          "kpi_target_base": "9000",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.022,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9000"
+          ],
+          "kpi_target_base": "9000",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P01",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9001",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.993,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9001"
+          ],
+          "kpi_target_base": "9001",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.987,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9001"
+          ],
+          "kpi_target_base": "9001",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.986,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9001"
+          ],
+          "kpi_target_base": "9001",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P02",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9002",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.012,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9002"
+          ],
+          "kpi_target_base": "9002",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.018,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9002"
+          ],
+          "kpi_target_base": "9002",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.019,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9002"
+          ],
+          "kpi_target_base": "9002",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P03",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9003",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.019,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9003"
+          ],
+          "kpi_target_base": "9003",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.025,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9003"
+          ],
+          "kpi_target_base": "9003",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.02,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9003"
+          ],
+          "kpi_target_base": "9003",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P04",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9004",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.986,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9004"
+          ],
+          "kpi_target_base": "9004",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.987,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9004"
+          ],
+          "kpi_target_base": "9004",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.989,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9004"
+          ],
+          "kpi_target_base": "9004",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P05",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9005",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.004,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9005"
+          ],
+          "kpi_target_base": "9005",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.015,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9005"
+          ],
+          "kpi_target_base": "9005",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.017,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9005"
+          ],
+          "kpi_target_base": "9005",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P06",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9006",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.001,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9006"
+          ],
+          "kpi_target_base": "9006",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.996,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9006"
+          ],
+          "kpi_target_base": "9006",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.011,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9006"
+          ],
+          "kpi_target_base": "9006",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P07",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9007",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.009,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9007"
+          ],
+          "kpi_target_base": "9007",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.023,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9007"
+          ],
+          "kpi_target_base": "9007",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.004,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9007"
+          ],
+          "kpi_target_base": "9007",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P08",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9008",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.988,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9008"
+          ],
+          "kpi_target_base": "9008",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.996,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9008"
+          ],
+          "kpi_target_base": "9008",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.982,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9008"
+          ],
+          "kpi_target_base": "9008",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P09",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9009",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.994,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9009"
+          ],
+          "kpi_target_base": "9009",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.002,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9009"
+          ],
+          "kpi_target_base": "9009",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.996,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9009"
+          ],
+          "kpi_target_base": "9009",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P10",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9010",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.981,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9010"
+          ],
+          "kpi_target_base": "9010",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.978,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9010"
+          ],
+          "kpi_target_base": "9010",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.99,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9010"
+          ],
+          "kpi_target_base": "9010",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P11",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9011",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.977,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9011"
+          ],
+          "kpi_target_base": "9011",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.981,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9011"
+          ],
+          "kpi_target_base": "9011",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.977,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9011"
+          ],
+          "kpi_target_base": "9011",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P12",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9012",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.013,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9012"
+          ],
+          "kpi_target_base": "9012",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.012,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9012"
+          ],
+          "kpi_target_base": "9012",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.01,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9012"
+          ],
+          "kpi_target_base": "9012",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P13",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9013",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.002,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9013"
+          ],
+          "kpi_target_base": "9013",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.989,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9013"
+          ],
+          "kpi_target_base": "9013",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.995,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9013"
+          ],
+          "kpi_target_base": "9013",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P14",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9014",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.998,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9014"
+          ],
+          "kpi_target_base": "9014",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.995,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9014"
+          ],
+          "kpi_target_base": "9014",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.998,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9014"
+          ],
+          "kpi_target_base": "9014",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P15",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9015",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.997,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9015"
+          ],
+          "kpi_target_base": "9015",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.005,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9015"
+          ],
+          "kpi_target_base": "9015",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.003,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9015"
+          ],
+          "kpi_target_base": "9015",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P16",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9016",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.024,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9016"
+          ],
+          "kpi_target_base": "9016",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.008,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9016"
+          ],
+          "kpi_target_base": "9016",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.018,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9016"
+          ],
+          "kpi_target_base": "9016",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P17",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9017",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.998,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9017"
+          ],
+          "kpi_target_base": "9017",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.006,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9017"
+          ],
+          "kpi_target_base": "9017",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.006,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9017"
+          ],
+          "kpi_target_base": "9017",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P18",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9018",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.012,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9018"
+          ],
+          "kpi_target_base": "9018",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.019,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9018"
+          ],
+          "kpi_target_base": "9018",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.014,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9018"
+          ],
+          "kpi_target_base": "9018",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P19",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9019",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.981,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9019"
+          ],
+          "kpi_target_base": "9019",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.998,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9019"
+          ],
+          "kpi_target_base": "9019",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.992,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9019"
+          ],
+          "kpi_target_base": "9019",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P20",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9020",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 0.984,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9020"
+          ],
+          "kpi_target_base": "9020",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.984,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9020"
+          ],
+          "kpi_target_base": "9020",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 0.987,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9020"
+          ],
+          "kpi_target_base": "9020",
+          "peak_rss_kb": 524288
+        }
+      ]
+    },
+    {
+      "suite_id": "P21",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "9021",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.02,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9021"
+          ],
+          "kpi_target_base": "9021",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.01,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9021"
+          ],
+          "kpi_target_base": "9021",
+          "peak_rss_kb": 524288
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.008,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "9021"
+          ],
+          "kpi_target_base": "9021",
+          "peak_rss_kb": 524288
+        }
+      ]
+    }
+  ]
+}

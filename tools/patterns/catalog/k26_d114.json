@@ -1,0 +1,12 @@
+{
+  "k": 26,
+  "diameter": 114,
+  "canonical_only": true,
+  "total_count": 1,
+  "elapsed_s": 16.561,
+  "threads": 4,
+  "tool": "pattern_enum.c v1.0",
+  "patterns": [
+    {"offsets": [0, 2, 14, 18, 20, 24, 30, 32, 38, 42, 44, 48, 54, 62, 68, 72, 74, 80, 84, 90, 98, 102, 104, 108, 110, 114], "name_suggestion": "KT26_P0"}
+  ]
+}

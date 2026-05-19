@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "binary": "(synthetic)",
+    "suite_tsv": "tools/kpi_fixtures/fixture_c_coverage.calibration.json",
+    "target_s": 30.0,
+    "n_records": 5,
+    "n_missing": 0,
+    "generated_at": "2026-05-10T00:00:00Z",
+    "fixture_purpose": "fixture_c_coverage"
+  },
+  "records": [
+    {
+      "suite_id": "F3A",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "201",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "parse_fail": "synthetic-timeout"
+        },
+        {
+          "parse_fail": "synthetic-malformed"
+        },
+        {
+          "parse_fail": "synthetic-rc1"
+        }
+      ]
+    },
+    {
+      "suite_id": "F3B",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "202",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "parse_fail": "synthetic-timeout"
+        },
+        {
+          "parse_fail": "synthetic-malformed"
+        },
+        {
+          "parse_fail": "synthetic-rc1"
+        }
+      ]
+    },
+    {
+      "suite_id": "F3C",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "203",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "parse_fail": "synthetic-timeout"
+        },
+        {
+          "parse_fail": "synthetic-malformed"
+        },
+        {
+          "parse_fail": "synthetic-rc1"
+        }
+      ]
+    },
+    {
+      "suite_id": "F3D",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "204",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "parse_fail": "synthetic-timeout"
+        },
+        {
+          "parse_fail": "synthetic-malformed"
+        },
+        {
+          "parse_fail": "synthetic-rc1"
+        }
+      ]
+    },
+    {
+      "suite_id": "F3E",
+      "k": 16,
+      "pattern": "KT16_P0",
+      "base_dec": "205",
+      "bits": 66,
+      "prefix_bits": 6,
+      "prefix_str": "0b101001",
+      "probe_elapsed_s": 20.0,
+      "probe_prefix_bits": 7,
+      "probe_tput_cand_per_s": 1,
+      "probe_found": true,
+      "target_s": 30.0,
+      "synthetic_repeats": [
+        {
+          "hits": 1,
+          "elapsed_s": 1.0,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "205"
+          ],
+          "kpi_target_base": "205"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.0,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "205"
+          ],
+          "kpi_target_base": "205"
+        },
+        {
+          "hits": 1,
+          "elapsed_s": 1.0,
+          "cand_per_s": 10000000000.0,
+          "useful_cand_per_s": 1000000000.0,
+          "gpu_util_pct": 100.0,
+          "kpi_match_seen": 1,
+          "kpi_early_exit": 1,
+          "found_bases": [
+            "205"
+          ],
+          "kpi_target_base": "205"
+        }
+      ]
+    }
+  ]
+}

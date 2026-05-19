@@ -1,0 +1,2602 @@
+<!DOCTYPE html>
+<!-- Copyright (c) 2026 Nenad Mićić <nenad@micic.be> -->
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime k-Tuplet Analyzer v3.1</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <style>
+        :root {
+            --bg0: #0a0e14; --bg1: #11161f; --bg2: #1a2233; --bg3: #243044;
+            --tx0: #e2e8f0; --tx1: #94a3b8; --tx2: #64748b;
+            --cyan: #22d3ee; --green: #34d399; --yellow: #fbbf24;
+            --red: #f87171; --purple: #c084fc; --blue: #60a5fa; --orange: #fb923c;
+            --border: #2d3a4f;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'SF Mono','Consolas','Monaco',monospace; background: var(--bg0); color: var(--tx0); font-size: 11px; line-height: 1.4; }
+        .app { max-width: 1600px; margin: 0 auto; padding: 8px 12px; }
+
+        .topbar { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); margin-bottom: 8px; flex-wrap: wrap; }
+        .topbar h1 { font-size: 13px; color: var(--cyan); white-space: nowrap; }
+        .topbar select, .topbar input {
+            padding: 5px 8px; font: inherit; background: var(--bg2);
+            border: 1px solid var(--border); border-radius: 4px; color: var(--tx0);
+        }
+        .topbar select { font-size: 11px; }
+        .topbar select:focus, .topbar input:focus { outline: none; border-color: var(--blue); }
+        .btn { padding: 5px 12px; font: inherit; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-go { background: var(--blue); color: #000; }
+        .btn-go:hover { background: var(--cyan); }
+        .btn-expand { background: var(--bg3); color: var(--tx1); border: 1px solid var(--border); font-size: 9px; padding: 4px 8px; }
+        .btn-expand:hover { color: var(--tx0); border-color: var(--tx1); }
+
+        .panel { background: var(--bg1); border: 1px solid var(--border); border-radius: 5px; margin-bottom: 6px; overflow: hidden; }
+        .panel-h { padding: 4px 8px; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+        .panel-h:hover { background: var(--bg3); }
+        .panel-h h2 { font-size: 10px; font-weight: 600; flex: 1; }
+        .panel-h .arrow { color: var(--tx2); font-size: 8px; transition: transform 0.2s; }
+        .panel-h .arrow.open { transform: rotate(90deg); }
+        .badge { padding: 1px 5px; border-radius: 6px; font-size: 9px; font-weight: 700; }
+        .bg { background: rgba(34,211,238,.15); color: var(--cyan); }
+        .bg-g { background: rgba(52,211,153,.15); color: var(--green); }
+        .bg-r { background: rgba(248,113,113,.15); color: var(--red); }
+        .bg-p { background: rgba(192,132,252,.15); color: var(--purple); }
+        .bg-y { background: rgba(251,191,36,.15); color: var(--yellow); }
+        .bg-o { background: rgba(251,146,60,.15); color: var(--orange); }
+        .panel-b { padding: 6px 8px; }
+        .panel-b.collapsed { display: none; }
+
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+        .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
+        @media (max-width: 1000px) { .grid3, .grid4 { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 700px) { .grid2, .grid3, .grid4 { grid-template-columns: 1fr; } }
+
+        .prop { display: flex; justify-content: space-between; padding: 1px 0; font-size: 10px; }
+        .prop-k { color: var(--tx2); }
+        .prop-v { color: var(--tx0); font-weight: 500; text-align: right; word-break: break-all; max-width: 70%; }
+        .mono { color: var(--cyan); font-family: inherit; }
+
+        .copybox { background: var(--bg2); padding: 4px 6px; border-radius: 3px; font-size: 9px; color: var(--cyan); margin: 2px 0; cursor: pointer; position: relative; word-break: break-all; border: 1px solid var(--border); }
+        .copybox:hover { background: var(--bg3); border-color: var(--tx2); }
+        .copybox::after { content: '📋'; position: absolute; right: 4px; top: 3px; font-size: 8px; opacity: 0.5; }
+        .copybox:hover::after { opacity: 1; }
+        .copybox.copied { border-color: var(--green); }
+        .copybox.copied::after { content: '✓'; color: var(--green); opacity: 1; }
+
+        .fact { color: var(--cyan); font-size: 9px; background: var(--bg3); padding: 2px 5px; border-radius: 3px; margin: 2px 0; word-break: break-all; }
+        .fact-tree { margin-left: 10px; padding-left: 8px; border-left: 1px solid var(--border); margin-top: 3px; }
+        .fact-item { margin: 2px 0; font-size: 9px; }
+        .fact-item .prime { color: var(--orange); font-weight: 600; }
+        .fact-item .sub { color: var(--cyan); margin-left: 6px; }
+
+        .depth-btns { display: flex; gap: 3px; margin-bottom: 4px; flex-wrap: wrap; }
+        .depth-btn { padding: 2px 8px; font: inherit; font-size: 9px; background: var(--bg3); border: 1px solid var(--border); border-radius: 3px; color: var(--tx2); cursor: pointer; }
+        .depth-btn:hover { color: var(--tx0); border-color: var(--tx1); }
+        .depth-btn.active { background: var(--blue); color: #000; border-color: var(--blue); }
+        .depth-btn.computing { background: var(--yellow); color: #000; }
+
+        .ctbl { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .ctbl th { background: var(--bg3); padding: 2px 3px; text-align: left; color: var(--tx2); font-weight: 600; font-size: 9px; border-bottom: 1px solid var(--border); white-space: nowrap; position: sticky; top: 0; }
+        .ctbl td { padding: 2px 3px; border-bottom: 1px solid var(--bg2); vertical-align: middle; }
+        .ctbl tr:hover { background: var(--bg2); }
+        .ctbl tr.prime-row td:first-child { border-left: 2px solid var(--green); }
+        .ctbl tr.comp-row td:first-child { border-left: 2px solid var(--red); }
+        .ctbl .val { color: var(--cyan); word-break: break-all; max-width: 280px; }
+        .ctbl .idx { color: var(--blue); font-weight: 700; text-align: center; width: 24px; }
+        .ctbl .num { text-align: right; white-space: nowrap; color: var(--tx1); }
+        .ctbl .res { text-align: center; font-size: 9px; min-width: 18px; }
+        .ctbl .res.hit { background: var(--red); color: #fff; font-weight: 700; border-radius: 2px; }
+        .chain-wrap { overflow-x: auto; }
+
+        .err { background: rgba(248,113,113,.1); border: 1px solid var(--red); border-radius: 4px; padding: 8px; color: var(--red); text-align: center; margin-bottom: 8px; }
+        .loading { text-align: center; padding: 16px; color: var(--tx2); }
+        .note { font-size: 8px; color: var(--tx2); margin-top: 4px; font-style: italic; }
+        .section-title { font-size: 11px; font-weight: 700; color: var(--cyan); margin: 12px 0 6px 0; padding-bottom: 3px; border-bottom: 1px solid var(--border); }
+        .footer { margin-top: 24px; padding: 12px; border-top: 1px solid var(--border); text-align: center; font-size: 9px; color: var(--tx2); }
+        .footer a { color: var(--cyan); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* === k-tuplet specific === */
+        .nl-wrap { background: var(--bg3); padding: 8px 6px; border-radius: 4px; overflow-x: auto; }
+        .nl-row { display: flex; align-items: stretch; gap: 0; min-width: max-content; }
+        .nl-cell {
+            min-width: 18px; height: 36px; padding: 2px 3px; margin: 0;
+            border-right: 1px solid var(--bg2); position: relative;
+            text-align: center; font-size: 8px; color: var(--tx2);
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+        }
+        .nl-cell.member { background: rgba(34,211,238,.15); border-right: 1px solid var(--border); }
+        .nl-cell.member.prime { background: rgba(52,211,153,.30); }
+        .nl-cell.member.composite { background: rgba(248,113,113,.30); }
+        .nl-cell .delta { font-size: 8px; color: var(--tx2); }
+        .nl-cell .marker { font-size: 11px; font-weight: 700; }
+        .nl-cell.member.prime .marker { color: var(--green); }
+        .nl-cell.member.composite .marker { color: var(--red); }
+        .nl-cell.gap .marker { color: var(--tx2); }
+
+        /* admissibility grid */
+        .ag-wrap { overflow-x: auto; max-height: 380px; overflow-y: auto; }
+        .ag-tbl { border-collapse: collapse; font-size: 9px; }
+        .ag-tbl th, .ag-tbl td { padding: 1px 4px; text-align: center; border: 1px solid var(--bg2); min-width: 18px; height: 16px; }
+        .ag-tbl th { background: var(--bg3); color: var(--tx2); font-weight: 600; position: sticky; top: 0; z-index: 1; }
+        .ag-tbl td.prime-label { background: var(--bg3); color: var(--orange); font-weight: 600; min-width: 26px; position: sticky; left: 0; z-index: 0; text-align: right; }
+        .ag-tbl td.adm { background: rgba(52,211,153,.18); color: var(--green); }
+        .ag-tbl td.forbid { background: rgba(248,113,113,.18); color: var(--red); }
+        .ag-tbl td.current { box-shadow: inset 0 0 0 2px var(--cyan); font-weight: 700; }
+        .ag-tbl td.bad-row { background: rgba(248,113,113,.5); }
+        .ag-meta { display: flex; gap: 12px; font-size: 9px; color: var(--tx2); margin-bottom: 4px; flex-wrap: wrap; }
+
+        /* composite proximity */
+        .cp-row { display: flex; gap: 1px; align-items: stretch; margin-bottom: 1px; }
+        .cp-label { min-width: 90px; padding: 2px 4px; background: var(--bg3); color: var(--cyan); font-size: 9px; display: flex; align-items: center; }
+        .cp-label.prime { color: var(--green); }
+        .cp-label.composite { color: var(--red); }
+        .cp-cell {
+            min-width: 22px; padding: 2px 1px; text-align: center;
+            font-size: 8px; border-right: 1px solid var(--bg2); background: var(--bg2);
+            display: flex; flex-direction: column; gap: 0; line-height: 1.0;
+        }
+        .cp-cell.center { background: rgba(34,211,238,.18); font-weight: 700; }
+        .cp-cell.prime-cell { background: rgba(52,211,153,.20); color: var(--green); }
+        .cp-cell.has-factor { color: var(--orange); }
+        .cp-cell.stripe { box-shadow: inset 0 0 0 1.5px var(--yellow); }
+        .cp-cell .δ { font-size: 7px; color: var(--tx2); }
+        .range-btns { display: flex; gap: 3px; margin-bottom: 4px; align-items: center; flex-wrap: wrap; }
+        .range-btns label { color: var(--tx2); font-size: 9px; }
+
+        /* Inter-member composite-texture strip */
+        .imc-wrap { overflow-x: auto; padding: 2px; }
+        .imc-row { display: flex; gap: 0; align-items: stretch; min-width: max-content; margin-bottom: 2px; }
+        .imc-cell {
+            min-width: 22px; height: 30px; padding: 1px 0; text-align: center;
+            font-size: 9px; border-right: 1px solid var(--bg0); display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            line-height: 1.0; color: var(--tx0);
+        }
+        .imc-cell .o { font-size: 7px; color: rgba(255,255,255,.55); }
+        .imc-cell.member { background: rgba(34,211,238,.30); }
+        .imc-cell.member.prime { background: rgba(52,211,153,.45); color: #000; font-weight: 700; }
+        .imc-cell.member.composite { background: rgba(248,113,113,.45); color: #fff; font-weight: 700; }
+        .imc-axis-cell {
+            min-width: 22px; padding: 0 0 1px 0; text-align: center;
+            font-size: 7px; color: var(--tx2); border-right: 1px solid var(--bg2);
+        }
+        .hist-wrap { display: grid; grid-template-columns: 28px 1fr 50px 50px; gap: 4px; align-items: center; font-size: 9px; }
+        .hist-bar { background: var(--bg3); height: 8px; border-radius: 2px; position: relative; }
+        .hist-bar .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--orange); border-radius: 2px; }
+        .hist-bar .expected { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--cyan); }
+        .stripe-list { font-size: 9px; color: var(--tx1); }
+        .stripe-list .item { padding: 2px 6px; background: var(--bg3); border-radius: 3px; margin-bottom: 2px; }
+        .stripe-list .item .delta { color: var(--cyan); font-weight: 700; margin-right: 6px; }
+        .stripe-list .item .factor { color: var(--orange); font-weight: 700; }
+
+        /* Control-mode badge */
+        .control-banner {
+            background: linear-gradient(135deg, rgba(192,132,252,.2), rgba(34,211,238,.2));
+            border: 1px solid var(--purple);
+            padding: 6px 10px; border-radius: 5px; margin-bottom: 6px;
+            font-size: 10px; color: var(--purple); display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+        }
+
+        /* === Pattern-match list === */
+        .matches-shell { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        @media (max-width: 1100px) { .matches-shell { grid-template-columns: 1fr; } }
+        .match-card {
+            background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+            padding: 6px 8px; cursor: pointer; transition: border-color .12s, background .12s;
+        }
+        .match-card:hover { border-color: var(--tx1); background: var(--bg3); }
+        .match-card.selected { border-color: var(--cyan); background: rgba(34,211,238,.08); }
+        .match-card.full { border-color: var(--green); }
+        .match-card.full.selected { border-color: var(--green); background: rgba(52,211,153,.10); }
+        .match-card.partial { border-color: var(--yellow); }
+        .match-head { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
+        .match-head .k { font-size: 13px; font-weight: 700; color: var(--cyan); }
+        .match-head .full-badge { background: var(--green); color: #000; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; }
+        .match-head .partial-badge { background: var(--yellow); color: #000; padding: 1px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; }
+        .match-head .source { font-size: 9px; color: var(--tx2); }
+        .match-head .h-k { font-size: 9px; color: var(--purple); }
+        .match-offsets { font-size: 9px; color: var(--cyan); word-break: break-all; }
+        .match-detail { font-size: 9px; color: var(--tx2); margin-top: 2px; }
+        .matches-stats { display: flex; gap: 12px; flex-wrap: wrap; font-size: 10px; color: var(--tx2); padding: 4px 0; }
+        .matches-stats strong { color: var(--cyan); }
+
+        /* === Wheel-depth ladder === */
+        .wheel-ladder { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0; }
+        .wheel-rung {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 4px 6px; border-radius: 3px;
+            background: var(--bg3); border: 1px solid var(--border);
+            min-width: 44px; font-size: 9px;
+            transition: transform .08s;
+        }
+        .wheel-rung:hover { transform: scale(1.08); }
+        .wheel-rung.pass { background: rgba(52,211,153,.14); border-color: rgba(52,211,153,.4); }
+        .wheel-rung.fail { background: rgba(248,113,113,.18); border-color: var(--red); }
+        .wheel-rung.too-small { background: rgba(148,163,184,.10); border-color: rgba(148,163,184,.35); opacity: 0.55; }
+        .wheel-rung.cat-min { box-shadow: inset 0 0 0 2px var(--cyan); opacity: 1; }
+        .wheel-rung .p-label { color: var(--orange); font-weight: 700; }
+        .wheel-rung.pass .p-label { color: var(--green); }
+        .wheel-rung.fail .p-label { color: var(--red); }
+        .wheel-rung.too-small .p-label { color: var(--tx2); }
+        .wheel-rung.too-small .mark { color: var(--tx2); }
+        .wheel-rung .mark { font-size: 11px; line-height: 1; margin-top: 1px; }
+        .wheel-summary {
+            display: flex; flex-wrap: wrap; gap: 12px;
+            padding: 6px 8px; margin-bottom: 4px;
+            background: var(--bg2); border-radius: 4px; font-size: 10px;
+        }
+        .wheel-summary .label { color: var(--tx2); }
+        .wheel-summary .val   { color: var(--cyan); font-weight: 700; }
+
+        /* === Custom-patterns area === */
+        .custom-area {
+            background: var(--bg2); border: 1px solid var(--border); border-radius: 4px;
+            padding: 8px; margin-bottom: 6px;
+        }
+        .custom-area textarea {
+            width: 100%; min-height: 60px; resize: vertical;
+            background: var(--bg3); border: 1px solid var(--border); border-radius: 3px;
+            color: var(--tx0); font: inherit; font-size: 10px; padding: 4px 6px;
+        }
+        .custom-area textarea:focus { outline: none; border-color: var(--blue); }
+        .custom-area .help { font-size: 9px; color: var(--tx2); margin-top: 4px; }
+        .custom-area .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .custom-area .head .lbl { color: var(--cyan); font-size: 10px; font-weight: 700; }
+        .custom-area .head .count { color: var(--tx2); font-size: 9px; }
+
+        /* per-member depth panel summary */
+        .dlayer { display: flex; align-items: center; gap: 4px; padding: 1px 0; font-size: 9px; }
+        .dlayer .lbl { color: var(--tx2); width: 28px; }
+        .dlayer .v { color: var(--cyan); }
+
+        /* small helper for stats */
+        .stat { display: flex; gap: 12px; flex-wrap: wrap; padding: 4px 0; font-size: 9px; color: var(--tx2); }
+        .stat strong { color: var(--cyan); }
+
+        /* offsets visualization compact */
+        .offset-pills { display: flex; flex-wrap: wrap; gap: 3px; margin: 4px 0; }
+        .offset-pill { padding: 1px 6px; background: var(--bg3); color: var(--cyan); border-radius: 3px; font-size: 9px; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="application/json" id="records">{"16":{"records":[{"base":"47710850533373130107","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":20,"date":"1997","author":"Tony Forbes"},{"base":"347709450746519734877","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":21,"date":"1996","author":"J\u00f6rg Waldvogel"},{"base":"695874886175252911063","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":21,"date":"1996","author":"J\u00f6rg Waldvogel"},{"base":"1099638576123052218257","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":22,"date":"1996","author":"J\u00f6rg Waldvogel"},{"base":"1169914227530138703617","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":22,"date":"1996","author":"J\u00f6rg Waldvogel"},{"base":"1522014304823128379267","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":22,"date":"1997","author":"Tony Forbes"},{"base":"20947353617877810296177","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":23,"date":"1999","author":"Tony Forbes"},{"base":"47624415490498763963983","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":23,"date":"2001","author":"Peter Leikauf, J\u00f6rg Waldvogel"},{"base":"1008037335701436528651167","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":25,"date":"Feb 2021","author":"Norman Luhn"},{"base":"1015074281315414986743013","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Feb 2021","author":"Norman Luhn"},{"base":"3327635699594161227885617","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"3668262050085284134305827","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"4410350515531687143590177","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"4448854703435773339525753","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"4460854210129372667384777","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"4832244481144873961495263","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"5123424425629589842009183","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"5315687855627482486019803","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"5767762827981847923136843","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"5829755258165124648238813","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"5864040093548465525463703","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"6097058661054854619479357","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"8123287824666722554529687","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"9035534891670879193999333","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"9276275190948013462871593","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"9569595773264659850905123","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"9650336819926778895196213","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"9810028287321148107308023","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"10252256693298561414756287","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"2004","author":"Jens Kruse Andersen"},{"base":"13541936591904559717085143","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"13869497324977990741392283","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"14572067509290472479435073","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"15484349702608183190586797","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"16762005170128542220583623","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"18795019410644838569261057","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"19453410564384059631965533","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"20338708738516444189126217","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"20528798200669046577816463","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"21247580101231619833254493","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"24519309706781372548178117","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"27663490144328268616769387","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"28697769080066241198976937","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"29141972998034038331352167","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"30739487512102293375333887","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"32494695846932250256922533","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"33924758015761437176599183","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"35839556860251188435458003","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"35885707235361657484898023","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"36628757372193420935047483","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"38082636384087860475653747","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"38703994459560945396965087","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"39135286142065838245784267","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"39452706105687917512613147","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"41435247423826633213373473","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"42422872235802713349407717","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"44521349510218311048324943","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Mar 2009","author":"Jaroslaw Wroblewski"},{"base":"45977590445302370920118057","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"46635660851516237285397617","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Mar 2009","author":"Jaroslaw Wroblewski"},{"base":"47484723317467297181983667","offsets":[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"48129047932652814812211463","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60],"digits":26,"date":"Mar 2009","author":"Jaroslaw Wroblewski"}],"admissibility_sets":[]},"17":{"records":[{"base":"1620784518619319025971","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":22,"date":"1997","author":"J\u00f6rg Waldvogel"},{"base":"2639154464612254121531","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":22,"date":"1998","author":"J\u00f6rg Waldvogel"},{"base":"3259125690557440336631","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":22,"date":"1997","author":"Tony Forbes"},{"base":"37630850994954402655487","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":23,"date":"2001","author":"Peter Leikauf and J\u00f6rg Waldvogel"},{"base":"47624415490498763963983","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":23,"date":"2001","author":"Peter Leikauf and J\u00f6rg Waldvogel"},{"base":"53947453971035573715707","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":23,"date":"1998","author":"Tony Forbes"},{"base":"78314167738064529047713","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":23,"date":"2001","author":"Peter Leikauf and J\u00f6rg Waldvogel"},{"base":"83405687980406998933663","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":23,"date":"2001","author":"Peter Leikauf and J\u00f6rg Waldvogel"},{"base":"110885131130067570042703","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":24,"date":"2001","author":"Peter Leikauf and J\u00f6rg Waldvogel"},{"base":"163027495131423420474913","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":24,"date":"2001","author":"Peter Leikauf and J\u00f6rg Waldvogel"},{"base":"734975534793324512717947","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":24,"date":"2009","author":"J\u00f6rg Waldvogel"},{"base":"753314125249587933791677","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":24,"date":"2009","author":"J\u00f6rg Waldvogel"},{"base":"1024494443639408527082233","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":25,"date":"Apr 2021","author":"Norman Luhn"},{"base":"1234254817970443433617451","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":25,"date":"Apr 2021","author":"Norman Luhn"},{"base":"1271960773255490350812797","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":25,"date":"Jun 2021","author":"Norman Luhn"},{"base":"1341829940444122313597407","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":25,"date":"Jun 2021","author":"Norman Luhn"},{"base":"4413937932023165100037481","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"5767762827981847923136843","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"5797342442373866594673457","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":25,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"10534990118815493999731057","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"12619228903670164829370257","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"13272688259204223913800677","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"23281092933950338544113997","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"28354435461222964236546397","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"28945417786141422786373147","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"34407215710318773206131183","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"37287368519826076963664351","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"38229102956391338482904407","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":26,"date":"Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"39463228205493543106813093","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"47513576234722162484953031","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"47853208492419453571190741","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":26,"date":"Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"48723499965200144426969563","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":26,"date":"Mar 2009","author":"Jaroslaw Wroblewski"},{"base":"49435457668491638790379331","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":26,"date":"Mar 2009","author":"Jaroslaw Wroblewski"},{"base":"55117676480503095172430657","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Mar 2009","author":"Jaroslaw Wroblewski"},{"base":"59584682807798169975870857","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Apr 2009","author":"Jaroslaw Wroblewski"},{"base":"60181896060933411505367567","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Apr 2009","author":"Jaroslaw Wroblewski"},{"base":"60260203461015825227773807","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":26,"date":"Mar 2009","author":"Jaroslaw Wroblewski"},{"base":"60564413358406851768962027","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Apr 2009","author":"Jaroslaw Wroblewski"},{"base":"62199492317273534723186627","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Apr 2009","author":"Jaroslaw Wroblewski"},{"base":"64428431752041597568114727","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"May 2009","author":"Jaroslaw Wroblewski"},{"base":"68552891188828388567298071","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":26,"date":"Apr 2009","author":"Jaroslaw Wroblewski"},{"base":"82357187896469143309815157","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":26,"date":"May 2009","author":"Jaroslaw Wroblewski"},{"base":"82979186055075407127863831","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":26,"date":"May 2009","author":"Jaroslaw Wroblewski"},{"base":"87448712438181889155213847","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":26,"date":"Jun 2009","author":"Jaroslaw Wroblewski"},{"base":"88679568717139869434078111","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":26,"date":"Jun 2009","author":"Jaroslaw Wroblewski"},{"base":"89417816378966798217367867","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":26,"date":"Jun 2009","author":"Jaroslaw Wroblewski"},{"base":"93060162061530627501044443","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":26,"date":"Jul 2009","author":"Jaroslaw Wroblewski"},{"base":"93445018438478552173384997","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Jul 2009","author":"Jaroslaw Wroblewski"},{"base":"94378379636222147586937757","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":26,"date":"Jul 2009","author":"Jaroslaw Wroblewski"},{"base":"96400583555387852509886053","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":26,"date":"Jul 2009","author":"Jaroslaw Wroblewski"},{"base":"108028115325711322131336887","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":27,"date":"Oct 2009","author":"Jaroslaw Wroblewski"},{"base":"108233673706209779713888897","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":27,"date":"Aug 2009","author":"Jaroslaw Wroblewski"},{"base":"110676198907326308721578107","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":27,"date":"Aug 2009","author":"Jaroslaw Wroblewski"},{"base":"116983092273315565670500067","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":27,"date":"Nov 2009","author":"Jaroslaw Wroblewski"},{"base":"121959524354114874784103687","offsets":[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66],"digits":27,"date":"Oct 2009","author":"Jaroslaw Wroblewski"},{"base":"123096138040090345198211137","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":27,"date":"Oct 2009","author":"Jaroslaw Wroblewski"},{"base":"123403439872166539843841077","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":27,"date":"Oct 2009","author":"Jaroslaw Wroblewski"},{"base":"125537512169052550394134243","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66],"digits":27,"date":"Nov 2009","author":"Jaroslaw Wroblewski"},{"base":"131351782821854590960897927","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66],"digits":27,"date":"Nov 2009","author":"Jaroslaw Wroblewski"},{"base":"132499883151966036853859711","offsets":[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66],"digits":27,"date":"Nov 2009","author":"Jaroslaw Wroblewski"}],"admissibility_sets":[]},"18":{"records":[{"base":"1906230835046648293290043","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70],"digits":25,"date":"31 Jan 2001","author":"J\u00f6rg Waldvogel & Peter Leikauf"},{"base":"2845372542509911868266807","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":25,"date":"13 Nov 2000","author":"J\u00f6rg Waldvogel & Peter Leikauf"},{"base":"4530085223434265844952597","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":25,"date":"14 Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"5660565448926871568362213","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70],"digits":25,"date":"16 Mar 2026","author":"John Armitage"},{"base":"6072209091722134881897313","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70],"digits":25,"date":"16 Mar 2026","author":"John Armitage"},{"base":"11298510058634407483251313","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70],"digits":26,"date":"18 Dec 2008","author":"Jaroslaw Wroblewski"},{"base":"23531820918273007548405133","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70],"digits":26,"date":"16 Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"33755528632220819791319947","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":26,"date":"26 Jan 2009","author":"Jaroslaw Wroblewski"},{"base":"44453357465442632103684223","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70],"digits":26,"date":"20 Feb 2009","author":"Jaroslaw Wroblewski"},{"base":"51342365971531191697537333","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70],"digits":26,"date":"12 Mar 2009","author":"Jaroslaw Wroblewski"},{"base":"159272023128204753638724847","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":27,"date":"15 Jan 2010","author":"Jaroslaw Wroblewski"},{"base":"183837276562811649018077773","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70],"digits":27,"date":"26 Apr 2010","author":"Jaroslaw Wroblewski"},{"base":"601884606346328759496455407","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":27,"date":"4 Feb 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"630134041802574490482213907","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":27,"date":"9 Feb 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"656632460108426841186109957","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":27,"date":"19 Feb 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"917810189564189435979968497","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":27,"date":"29 May 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1298727446766852814126007587","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"9 Dec 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1378931799889412563577465677","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"9 Dec 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1657958103171451056593631007","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"26 Jan 2012","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1736329258497083632536036877","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"22 Mar 2012","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1752347810197939558619028007","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"22 Mar 2012","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"2152095346273291005088484977","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"2 Dec 2012","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"2348190884512663974906615487","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"17 Dec 2012","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"2406179998282157386567481197","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"31 Dec 2012","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"2650778861583720495199114537","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"25 Feb 2013","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"3176488693054534709318830357","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"30 Jul 2013","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"3261917553005305074228431077","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"30 Jul 2013","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"3361885098594416802447362317","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"30 Jul 2013","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"4483200447126419500533043987","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"4 Jan 2014","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"4652363394518920290108071167","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"4 Jan 2014","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"4668263977931056970475231217","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"4 Jan 2014","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"5621078036155517013724659007","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"4 Mar 2014","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"5867208169546174917450987997","offsets":[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70],"digits":28,"date":"11 Mar 2014","author":"Raanan Chermoni & Jaroslaw Wroblewski"}],"admissibility_sets":[[13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83]]},"19":{"records":[{"base":"204480527545513119437376727","offsets":[0,4,6,10,12,16,24,30,34,40,42,46,52,54,60,66,70,72,76],"digits":27,"date":"24 Apr 2026","author":"John Armitage"},{"base":"362446150252909869314435203","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70,76],"digits":27,"date":"24 Apr 2026","author":"John Armitage"},{"base":"428407853295060068253460573","offsets":[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70,76],"digits":27,"date":"25 Apr 2026","author":"John Armitage"},{"base":"630134041802574490482213901","offsets":[0,6,10,16,18,22,28,30,36,42,46,48,52,58,60,66,70,72,76],"digits":27,"date":"9 Feb 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"656632460108426841186109951","offsets":[0,6,10,16,18,22,28,30,36,42,46,48,52,58,60,66,70,72,76],"digits":27,"date":"19 Feb 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"917810189564189435979968491","offsets":[0,6,10,16,18,22,28,30,36,42,46,48,52,58,60,66,70,72,76],"digits":27,"date":"29 May 2011","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"2348190884512663974906615481","offsets":[0,6,10,16,18,22,28,30,36,42,46,48,52,58,60,66,70,72,76],"digits":28,"date":"17 Dec 2012","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"2406179998282157386567481191","offsets":[0,6,10,16,18,22,28,30,36,42,46,48,52,58,60,66,70,72,76],"digits":28,"date":"31 Dec 2012","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"39433867730216371575457664407","offsets":[0,4,6,10,16,22,24,30,34,36,42,46,52,60,64,66,70,72,76],"digits":29,"date":"8 Jan 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"138433730977092118055599751677","offsets":[0,4,6,10,16,22,24,30,34,36,42,46,52,60,64,66,70,72,76],"digits":30,"date":"8 Oct 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"248283957683772055928836513597","offsets":[0,4,6,10,16,22,24,30,34,36,42,46,52,60,64,66,70,72,76],"digits":30,"date":"1 Aug 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"622803914376064301858782434517","offsets":[0,4,6,10,12,16,24,30,34,40,42,46,52,54,60,66,70,72,76],"digits":30,"date":"27 Dec 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"}],"admissibility_sets":[[37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113],[13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89]]},"20":{"records":[{"base":"3941119827895253385301920029","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":28,"date":"24 Jun 2014","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"14374153072440029138813893241","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":29,"date":"6 Oct 2014","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"17546231261175189855273591491","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":29,"date":"11 Dec 2014","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"38299233570943052294942174849","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":29,"date":"9 Jan 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"39433867730216371575457664399","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":29,"date":"8 Jan 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"40814702190384518551961455541","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":29,"date":"6 Feb","author":"2015, Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"58228410683159656922037124961","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":29,"date":"30 April 30 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"69611500022230424427263424221","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":29,"date":"22 Apr 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"97344384991448238094880899499","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":29,"date":"11 Jul 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"111286948968140923889225384099","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"12 Aug 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"114601431611676407654036210321","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"3 Sep 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"121888742383899006588229597469","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"9 Sep 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"131353007727172552185076031849","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"8 Oct 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"131900255854906356663126180791","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"20 Oct 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"138433730977092118055599751669","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"8 Oct 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"140005104744811513908777956909","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"8 Oct 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"140661282456312925227370009589","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"8 Oct 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"154016910009801751265474541311","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"16 Dec 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"161375347518710752668754312691","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"3 Jan 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"182129285194786190875974840371","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"16 Mar 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"185986500598659638316208079201","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"16 Mar 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"187976201367296936422347098471","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"16 Mar 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"220974232729147341120519932981","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"31 May 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"227104691557231224024329351201","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"1 Aug 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"242145669497919182306126385461","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"1 Aug 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"248283957683772055928836513589","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"1 Aug 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"260786413629117930695179308299","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"7 Dec 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"320430661688896578454772807699","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"24 May 2017","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"349021296319127268299400177269","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"24 May 2017","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"352259532126245901475150592651","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"24 May 2017","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"400327605553593948618674105711","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"7 Dec 2017","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"403065917762608576939692599261","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"7 Dec 2017","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"452101241612347545944528242469","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"28 Jan 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"466435879660522367654413675211","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"15 Mar 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"494179332730633784520908832239","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"23 May 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"562324418721793120042174985351","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"30 Aug 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"562422394447827908154562532159","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"30 Aug 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"593820854957327357933627374349","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"23 Dec 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"594750459626903777773717631519","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"23 Dec 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"622803914376064301858782434521","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"23 Dec 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"639121700726230052098229452019","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"23 Dec 2018","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"667424014858149638371951648871","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"18 Feb 2019","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"686962597479437604159786541481","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"27 Apr 2019","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"701870455949526598513130862539","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"7 Apr 2019","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"764364269069907627842423582909","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"17 Jul 2019","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"789292095021856634277511882469","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"19 Aug 2019","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"807462397198198801670343382679","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"25 Sept 2019","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"831504454982803270879178298359","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"17 Oct 2019","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"839013472011818416634745523991","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"28 Oct 2019","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"957278727962618711849051282459","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":30,"date":"23 Mar 2020","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"999627565307688186459783232931","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":30,"date":"19 Jun 2020","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1060475118776959297139870952701","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":31,"date":"18 Sep 2020","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1094372814043722195189448411199","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":31,"date":"20 Oct 2020","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1126002593922465663847897293731","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":31,"date":"17 Nov 2020","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1135540756371356698957890225821","offsets":[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80],"digits":31,"date":"19 Dec 2020","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1153897621507935436463788957529","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":31,"date":"26 Dec 2020","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1188350591359110800209379560799","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":31,"date":"21 Jan 2021","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"1236637204227022808686214288579","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80],"digits":31,"date":"23 May 2021","author":"Raanan Chermoni & Jaroslaw Wroblewski"}],"admissibility_sets":[[29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109]]},"21":{"records":[{"base":"39433867730216371575457664399","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80,84],"digits":29,"date":"8 Jan 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"138433730977092118055599751669","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80,84],"digits":30,"date":"8 Oct 2015","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"248283957683772055928836513589","offsets":[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80,84],"digits":30,"date":"1 Aug 2016","author":"Raanan Chermoni & Jaroslaw Wroblewski"},{"base":"622803914376064301858782434517","offsets":[0,4,6,10,12,16,24,30,34,40,42,46,52,54,60,66,70,72,76,82,84],"digits":30,"date":"December 27","author":"2018, Raanan Chermoni & Jaroslaw Wroblewski"}],"admissibility_sets":[[29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113]]}}</script>
+
+<script type="text/babel">
+const {useState, useCallback, useEffect, useMemo} = React;
+
+// ===== INLINED RECORDS =====
+const RECORDS = JSON.parse(document.getElementById('records').textContent);
+
+// ===== MATH PRIMITIVES (ported from chain-analyzer v13) =====
+function modPow(b,e,m){let r=1n;b=b%m;while(e>0n){if(e%2n===1n)r=(r*b)%m;e/=2n;b=(b*b)%m;}return r;}
+function gcd(a,b){while(b!==0n){[a,b]=[b,a%b];}return a;}
+function isPrime(n){
+    if(typeof n!=='bigint')n=BigInt(n);
+    if(n<2n)return false;if(n===2n||n===3n)return true;if(n%2n===0n)return false;
+    let r=0n,d=n-1n;while(d%2n===0n){r++;d/=2n;}
+    for(const a of[2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n,37n,41n,43n]){
+        if(a>=n)continue;let x=modPow(a,d,n);if(x===1n||x===n-1n)continue;
+        let comp=true;for(let i=0n;i<r-1n;i++){x=modPow(x,2n,n);if(x===n-1n){comp=false;break;}}
+        if(comp)return false;
+    }return true;
+}
+function v2(n){if(n===0n)return 0;let v=0;while(n%2n===0n){v++;n/=2n;}return v;}
+function oddPart(n){while(n%2n===0n)n/=2n;return n;}
+function popcount(n){let c=0;while(n>0n){if(n%2n===1n)c++;n/=2n;}return c;}
+
+function pollardRho(n,max=50000){
+    if(n%2n===0n)return 2n;let x=2n,y=2n,d=1n,iter=0;
+    const f=x=>(x*x+1n)%n;
+    while(d===1n&&iter<max){x=f(x);y=f(f(y));d=gcd(x>y?x-y:y-x,n);iter++;}
+    return d!==n?d:null;
+}
+// Full factorization (same shape as v13)
+function factorize(n,tl=2000){
+    if(typeof n!=='bigint')n=BigInt(n);if(n<=1n)return[];
+    const st=Date.now(),facs=new Map();let d=2n;
+    while(d*d<=n&&d<=100000n){while(n%d===0n){facs.set(d,(facs.get(d)||0)+1);n/=d;}d+=d===2n?1n:2n;}
+    const q=[n>1n?n:null].filter(Boolean);
+    while(q.length>0&&Date.now()-st<tl){
+        const c=q.pop();if(!c||c===1n)continue;
+        if(isPrime(c)){facs.set(c,(facs.get(c)||0)+1);continue;}
+        const f=pollardRho(c);if(f&&f!==c){q.push(f);q.push(c/f);}else{facs.set(c,(facs.get(c)||0)+1);}
+    }
+    for(const c of q)if(c&&c>1n)facs.set(c,(facs.get(c)||0)+1);
+    return[...facs.entries()].map(([p,e])=>({p,e,pr:isPrime(p)})).sort((a,b)=>a.p<b.p?-1:1);
+}
+function fmtFact(fs){if(!fs||!fs.length)return'1';return fs.map(f=>{const s=f.pr?'':' [C]';return f.e===1?`${f.p}${s}`:`${f.p}^${f.e}${s}`;}).join(' × ');}
+function fmtFactTagged(fs){
+    if(!fs||!fs.length)return'1';
+    return fs.map(f=>{
+        const bits=f.p.toString(2).length;
+        if(f.pr){
+            if(bits>24)return f.e===1?`P${bits}b`:`P${bits}b^${f.e}`;
+            return f.e===1?`${f.p}`:`${f.p}^${f.e}`;
+        }else{
+            if(bits>24)return f.e===1?`C${bits}b`:`C${bits}b^${f.e}`;
+            return f.e===1?`${f.p}[C]`:`${f.p}[C]^${f.e}`;
+        }
+    }).join(' × ');
+}
+function smoothSplit(n,B=31){
+    const primes=[2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n].filter(p=>p<=BigInt(B));
+    let smooth=1n,rem=n;
+    for(const p of primes){while(rem%p===0n){smooth*=p;rem/=p;}}
+    return{smooth,rem,smoothBits:smooth.toString(2).length,remBits:rem.toString(2).length};
+}
+// Smallest small-prime factor up to bound (or null)
+function smallestFactor(n,bound=1000){
+    if(n<=1n)return null;
+    if(n%2n===0n)return 2n;
+    for(let q=3n;q<=BigInt(bound)&&q*q<=n;q+=2n){
+        if(n%q===0n)return q;
+    }
+    return null;
+}
+
+// Deep recursive factorization of m±1 (ported from v13 computeDeepFact)
+function computeDeepFact(n,maxDepth,depth,cache){
+    if(n<=1n)return{n,factors:[],factStr:'1',taggedStr:'1',children:[]};
+    const key=`${n}:${depth}`;
+    if(cache.has(key))return cache.get(key);
+    const factors=factorize(n);
+    const result={n,factors,factStr:fmtFact(factors),taggedStr:fmtFactTagged(factors),children:[]};
+    if(depth<maxDepth){
+        for(const f of factors){
+            if(f.p>256n&&f.pr){
+                const pm1=computeDeepFact(f.p-1n,maxDepth,depth+1,cache);
+                const pp1=computeDeepFact(f.p+1n,maxDepth,depth+1,cache);
+                result.children.push({prime:f.p,bits:f.p.toString(2).length,pm1,pp1});
+            }
+        }
+    }
+    cache.set(key,result);
+    return result;
+}
+
+function toHex(n){return'0x'+n.toString(16).toUpperCase();}
+function fmtHexShort(n,mx=44){const h=n.toString(16).toUpperCase();return h.length<=mx?'0x'+h:'0x'+h.slice(0,18)+'…'+h.slice(-14)+` (${h.length}h)`;}
+function fmtVal(n,fmt){
+    n=BigInt(n);
+    if(fmt==='hex')return fmtHexShort(n);
+    if(fmt==='dec'){const s=n.toString();return s.length<=44?s:s.slice(0,16)+'…'+s.slice(-16)+` (${s.length}d)`;}
+    const b=n.toString(2);return b.length>140?b.slice(0,50)+'…'+b.slice(-40):b;
+}
+
+// ===== K-TUPLET SPECIFIC =====
+const ADMISS_PRIMES = [3,5,7,11,13,17,19,23,29,31,37,41,43,47,53];
+const RESIDUE_PRIMES = [3,5,7,11,13,17,19,23];
+
+// Minimum span s(k) for prime k-tuplets (OEIS A008407).
+// k=2..17 from pzktupel.de/ktuplets.php; k=18..24 from pzktupel.de/ktpatt_hl.php.
+const MIN_WIDTH_SK = {
+    2:2, 3:6, 4:8, 5:12, 6:16, 7:20, 8:26, 9:30, 10:32, 11:36,
+    12:42, 13:48, 14:50, 15:56, 16:60, 17:66, 18:70, 19:76, 20:80,
+    21:84, 22:90, 23:94, 24:100, 25:110, 26:114, 27:120, 28:126,
+};
+
+// Admissible patterns catalog from https://pzktupel.de/ktpatt_hl.php
+// H_k is the Hardy-Littlewood density constant (when listed by source);
+// modulus is the smallest primorial admissibility forces the base to be fixed mod.
+const KTUPLE_CATALOG = {
+    2: [
+        {offsets:[0,2], modulus:6, H_k:2},
+    ],
+    3: [
+        {offsets:[0,2,6], modulus:6, H_k:4.5},
+        {offsets:[0,4,6], modulus:6, H_k:4.5},
+    ],
+    4: [
+        {offsets:[0,2,6,8], modulus:30, H_k:13.5},
+    ],
+    5: [
+        {offsets:[0,2,6,8,12], modulus:30, H_k:24.71923828125},
+        {offsets:[0,4,6,10,12], modulus:30, H_k:24.71923828125},
+    ],
+    6: [
+        {offsets:[0,4,6,10,12,16], modulus:210, H_k:92.6971435546875},
+    ],
+    7: [
+        {offsets:[0,2,6,8,12,18,20], modulus:210, H_k:146.09222610791525},
+        {offsets:[0,2,8,12,14,18,20], modulus:210, H_k:146.09222610791525},
+    ],
+    8: [
+        {offsets:[0,2,6,8,12,18,20,26], modulus:210, H_k:766.984187066555},
+        {offsets:[0,6,8,14,18,20,24,26], modulus:210, H_k:766.984187066555},
+        {offsets:[0,2,6,12,14,20,24,26], modulus:30, H_k:2045.2911655108135},
+    ],
+    9: [
+        {offsets:[0,2,6,8,12,18,20,26,30], modulus:210, H_k:5243.0559662752785},
+        {offsets:[0,4,10,12,18,22,24,28,30], modulus:210, H_k:5243.0559662752785},
+        {offsets:[0,2,6,12,14,20,24,26,30], modulus:30, H_k:10486.111932550557},
+        {offsets:[0,4,6,10,16,18,24,28,30], modulus:30, H_k:10486.111932550557},
+    ],
+    10: [
+        {offsets:[0,2,6,8,12,18,20,26,30,32], modulus:210, H_k:40779.324182141056},
+        {offsets:[0,2,6,12,14,20,24,26,30,32], modulus:210, H_k:40779.324182141056},
+    ],
+    11: [
+        {offsets:[0,2,6,8,12,18,20,26,30,32,36], modulus:2310, H_k:32392.38854152935},
+        {offsets:[0,4,6,10,16,18,24,28,30,34,36], modulus:2310, H_k:32392.38854152935},
+    ],
+    12: [
+        {offsets:[0,2,6,8,12,18,20,26,30,32,36,42], modulus:2310, H_k:280599.06574099796},
+        {offsets:[0,6,10,12,16,22,24,30,34,36,40,42], modulus:2310, H_k:280599.06574099796},
+    ],
+    13: [
+        {offsets:[0,2,6,8,12,18,20,26,30,32,36,42,48], modulus:2310, H_k:231039.18386307702},
+        {offsets:[0,6,12,16,18,22,28,30,36,40,42,46,48], modulus:2310, H_k:231039.18386307702},
+        {offsets:[0,4,6,10,16,18,24,28,30,34,36,46,48], modulus:2310, H_k:224621.4287557693},
+        {offsets:[0,2,12,14,18,20,24,30,32,38,42,44,48], modulus:2310, H_k:224621.4287557693},
+        {offsets:[0,2,8,14,18,20,24,30,32,38,42,44,48], modulus:2730, H_k:269545.71450692316},
+        {offsets:[0,4,6,10,16,18,24,28,30,34,40,46,48], modulus:2730, H_k:269545.71450692316},
+    ],
+    14: [
+        {offsets:[0,2,6,8,12,18,20,26,30,32,36,42,48,50], modulus:30030, H_k:811132.9371736114},
+        {offsets:[0,2,8,14,18,20,24,30,32,38,42,44,48,50], modulus:30030, H_k:811132.9371736114},
+    ],
+    15: [
+        {offsets:[0,2,6,8,12,18,20,26,30,32,36,42,48,50,56], modulus:30030, H_k:6422604.460837265},
+        {offsets:[0,6,8,14,20,24,26,30,36,38,44,48,50,54,56], modulus:30030, H_k:6422604.460837265},
+        {offsets:[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56], modulus:210, H_k:22835926.97186583},
+        {offsets:[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56], modulus:210, H_k:22835926.97186583},
+    ],
+    16: [
+        {offsets:[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60], modulus:30030, H_k:81405850.77933651},
+        {offsets:[0,2,6,12,14,20,26,30,32,36,42,44,50,54,56,60], modulus:30030, H_k:81405850.77933651},
+    ],
+    17: [
+        {offsets:[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66], modulus:30030, H_k:86612289.04204501},
+        {offsets:[0,6,8,12,18,20,26,32,36,38,42,48,50,56,60,62,66], modulus:30030, H_k:86612289.04204501},
+        {offsets:[0,2,6,12,14,20,24,26,30,36,42,44,50,54,56,62,66], modulus:2310, H_k:106599740.35944001},
+        {offsets:[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66], modulus:2310, H_k:106599740.35944001},
+    ],
+    18: [
+        {offsets:[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70], modulus:30030, H_k:621583086.0358948},
+        {offsets:[0,4,10,12,16,22,24,30,36,40,42,46,52,54,60,64,66,70], modulus:30030, H_k:621583086.0358948},
+    ],
+    19: [
+        {offsets:[0,4,6,10,16,22,24,30,34,36,42,46,52,60,64,66,70,72,76], modulus:30030, H_k:1184970791.715452},
+        {offsets:[0,4,6,10,12,16,24,30,34,40,42,46,52,54,60,66,70,72,76], modulus:30030, H_k:1184970791.715452},
+        {offsets:[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70,76], modulus:510510, H_k:350105006.6432017},
+        {offsets:[0,6,10,16,18,22,28,30,36,42,46,48,52,58,60,66,70,72,76], modulus:510510, H_k:350105006.6432017},
+    ],
+    20: [
+        {offsets:[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80], modulus:30030, H_k:5504833929.685064},
+        {offsets:[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80], modulus:30030, H_k:5504833929.685064},
+    ],
+    21: [
+        {offsets:[0,4,6,10,12,16,24,30,34,40,42,46,52,54,60,66,70,72,76,82,84], modulus:30030, H_k:52827910613.57384},
+        {offsets:[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80,84], modulus:30030, H_k:52827910613.57384},
+    ],
+    22: [
+        {offsets:[0,2,6,8,12,20,26,30,36,38,42,48,50,56,62,66,68,72,78,80,86,90], modulus:510510, H_k:181258721934.03226},
+        {offsets:[0,4,10,12,18,22,24,28,34,40,42,48,52,54,60,64,70,78,82,84,88,90], modulus:510510, H_k:181258721934.03226},
+        {offsets:[0,6,8,14,18,20,24,30,36,38,44,48,50,56,60,66,74,78,80,84,86,90], modulus:510510, H_k:302097869890.0537},
+        {offsets:[0,4,6,10,12,16,24,30,34,40,42,46,52,54,60,66,70,72,76,82,84,90], modulus:510510, H_k:302097869890.0537},
+    ],
+    23: [
+        {offsets:[0,4,6,10,12,16,24,30,34,40,42,46,52,54,60,66,70,72,76,82,84,90,94], modulus:510510, H_k:150979052373.01428},
+        {offsets:[0,4,10,12,18,22,24,28,34,40,42,48,52,54,60,64,70,78,82,84,88,90,94], modulus:510510, H_k:150979052373.01428},
+    ],
+    24: [
+        {offsets:[0,4,6,10,16,18,24,28,30,34,40,48,54,58,60,66,70,76,84,88,90,94,96,100], modulus:510510, H_k:941260029638.0109},
+        {offsets:[0,4,6,10,12,16,24,30,34,40,42,46,52,60,66,70,72,76,82,84,90,94,96,100], modulus:510510, H_k:941260029638.0109},
+        {offsets:[0,4,6,12,16,24,30,34,40,42,46,52,54,60,66,70,72,76,82,84,90,94,96,100], modulus:510510, H_k:1411890044457.0164},
+        {offsets:[0,4,6,10,16,18,24,28,30,34,40,46,48,54,58,60,66,70,76,84,88,94,96,100], modulus:510510, H_k:1411890044457.0164},
+    ],
+    25: [
+        {offsets:[0,2,6,8,12,18,20,26,30,32,36,42,48,50,56,62,68,72,78,86,90,96,98,102,110], modulus:510510},
+        {offsets:[0,2,6,8,12,20,26,30,36,38,42,48,56,66,68,72,78,80,86,90,92,96,98,108,110], modulus:9699690},
+        {offsets:[0,2,6,8,12,20,26,30,36,38,42,48,50,56,66,68,72,78,80,86,90,92,98,108,110], modulus:9699690},
+        {offsets:[0,2,6,8,12,20,26,30,36,38,42,50,56,66,68,72,78,80,86,90,92,96,98,108,110], modulus:9699690},
+        {offsets:[0,2,6,8,12,20,26,30,36,38,42,50,56,62,66,68,72,78,80,86,90,92,96,108,110], modulus:9699690},
+        {offsets:[0,2,6,8,12,20,26,30,36,38,42,48,56,62,66,68,72,78,80,86,90,92,96,108,110], modulus:9699690},
+        {offsets:[0,2,6,8,12,18,20,26,30,32,36,42,50,56,62,68,72,78,86,90,92,96,98,102,110], modulus:510510},
+        {offsets:[0,2,6,12,14,20,24,26,30,32,42,44,54,56,60,66,72,74,80,86,90,96,102,104,110], modulus:9699690},
+        {offsets:[0,6,8,14,20,24,30,36,38,44,50,54,56,66,68,78,80,84,86,90,96,98,104,108,110], modulus:9699690},
+        {offsets:[0,2,8,12,14,18,24,30,32,38,42,44,50,54,60,68,72,74,78,80,84,98,102,108,110], modulus:30030},
+        {offsets:[0,2,8,12,26,30,32,36,38,42,50,56,60,66,68,72,78,80,86,92,96,98,102,108,110], modulus:30030},
+        {offsets:[0,8,12,14,18,20,24,32,38,42,48,54,60,68,74,78,80,84,90,92,98,102,104,108,110], modulus:9699690},
+        {offsets:[0,8,12,14,20,24,32,38,42,48,54,60,62,68,74,78,80,84,90,92,98,102,104,108,110], modulus:510510},
+        {offsets:[0,2,12,14,18,20,24,30,32,38,42,44,54,60,68,72,74,80,84,90,98,102,104,108,110], modulus:9699690},
+        {offsets:[0,2,12,18,20,24,30,32,38,42,44,54,60,62,68,72,74,80,84,90,98,102,104,108,110], modulus:9699690},
+        {offsets:[0,2,12,14,18,20,24,30,32,38,42,44,54,62,68,72,74,80,84,90,98,102,104,108,110], modulus:9699690},
+        {offsets:[0,2,14,18,20,24,30,32,38,42,44,48,54,62,68,72,74,80,84,90,98,102,104,108,110], modulus:9699690},
+        {offsets:[0,2,14,18,20,24,30,32,38,42,44,48,54,60,68,72,74,80,84,90,98,102,104,108,110], modulus:9699690},
+    ],
+    26: [
+        {offsets:[0,4,6,10,12,16,24,30,34,40,42,46,52,60,66,70,72,76,82,84,90,94,96,100,112,114], modulus:9699690},
+        {offsets:[0,2,14,18,20,24,30,32,38,42,44,48,54,62,68,72,74,80,84,90,98,102,104,108,110,114], modulus:9699690},
+    ],
+    27: [
+        {offsets:[0,2,6,8,12,18,20,26,30,32,36,42,48,50,56,62,68,72,78,86,90,96,98,102,110,116,120], modulus:510510},
+        {offsets:[0,2,8,12,26,30,32,36,38,42,50,56,60,66,68,72,78,80,86,92,96,98,102,108,110,116,120], modulus:11741730},
+        {offsets:[0,4,6,10,16,18,24,28,30,34,36,46,48,58,60,66,70,76,78,84,88,94,100,106,114,118,120], modulus:510510},
+        {offsets:[0,4,10,12,18,22,24,28,34,40,42,48,52,54,60,64,70,78,82,84,88,90,94,108,112,118,120], modulus:11741730},
+        {offsets:[0,4,6,10,16,18,28,30,34,36,48,58,60,64,66,70,76,78,84,88,94,100,106,108,114,118,120], modulus:9699690},
+        {offsets:[0,2,6,14,20,26,32,36,42,44,50,54,60,62,72,74,84,86,90,92,96,102,104,110,114,116,120], modulus:510510},
+        {offsets:[0,2,6,12,14,20,26,32,36,42,44,50,54,56,60,62,72,84,86,90,92,102,104,110,114,116,120], modulus:9699690},
+        {offsets:[0,4,10,18,22,24,30,34,42,48,52,58,64,70,72,78,84,88,90,94,100,102,108,112,114,118,120], modulus:510510},
+    ],
+    28: [
+        {offsets:[0,2,6,8,12,20,26,30,36,38,42,48,56,66,68,72,78,80,86,90,92,96,98,108,110,120,122,126], modulus:9699690},
+        {offsets:[0,6,8,12,18,20,26,32,38,42,48,50,56,60,62,66,68,78,90,92,96,98,108,110,116,120,122,126], modulus:9699690},
+        {offsets:[0,4,6,10,16,18,24,28,30,34,36,46,48,58,60,66,70,76,78,84,88,94,100,106,114,118,120,126], modulus:510510},
+        {offsets:[0,6,10,12,16,22,24,30,34,36,40,42,52,54,64,66,72,76,82,84,90,94,100,106,112,120,124,126], modulus:11741730},
+        {offsets:[0,4,6,10,16,18,28,30,34,36,48,58,60,64,66,70,76,78,84,88,94,100,106,108,114,118,120,126], modulus:9699690},
+        {offsets:[0,4,6,16,18,28,30,34,36,40,46,48,54,58,60,70,78,84,88,90,96,100,106,114,118,120,124,126], modulus:9699690},
+        {offsets:[0,6,8,12,20,26,32,38,42,48,50,56,60,66,68,78,80,90,92,96,98,102,108,110,116,120,122,126], modulus:510510},
+        {offsets:[0,2,6,14,20,26,32,36,42,44,50,54,60,62,72,74,84,86,90,92,96,102,104,110,114,116,120,126], modulus:11741730},
+        {offsets:[0,2,6,12,14,24,26,30,32,44,54,56,60,62,66,72,74,80,84,90,96,102,104,110,114,116,122,126], modulus:9699690},
+        {offsets:[0,4,10,12,16,22,24,30,36,42,46,52,54,60,64,66,70,72,82,94,96,100,102,112,114,120,124,126], modulus:9699690},
+    ],
+};
+const sigOf = (offs) => offs.join(',');
+
+function findCatalogMatch(k, offsets) {
+    const cat = KTUPLE_CATALOG[k];
+    if (!cat) return null;
+    const sig = sigOf(offsets);
+    for (let i = 0; i < cat.length; i++) {
+        if (sigOf(cat[i].offsets) === sig) return {idx: i, ...cat[i]};
+    }
+    return null;
+}
+
+// All [k, idx, pattern] triples in the catalog, useful for the pattern scanner.
+function allCatalogPatterns() {
+    const out = [];
+    for (const k of Object.keys(KTUPLE_CATALOG).map(Number).sort((a,b) => a-b)) {
+        for (let i = 0; i < KTUPLE_CATALOG[k].length; i++) {
+            out.push({k, idx: i, ...KTUPLE_CATALOG[k][i]});
+        }
+    }
+    return out;
+}
+
+// isTrivialSubPatternOfHigherK: returns the higher-k catalog entry that contains
+// this pattern (or its mirror) as a sub-tuple after a constant shift, or null
+// if non-trivial. Matches Luhn's pzktupel.de "trivial known to given pattern"
+// terminology: a k record is trivial if its offsets are a subset (shift-and-
+// mirror-equivalent) of some catalog k'-tuplet with k' > k — any k'-tuplet
+// match produces this k-tuplet for free by picking k of the k' prime members.
+// Mirror-equivalence: searches for pattern P and mirror(P) are interchangeable
+// (same admissibility class, same H_k), so a parent that contains mirror(P) is
+// effectively a parent of P.
+// Caveat: catalog covers k=2..28 only, with sparse coverage above k=24. A
+// "non-trivial" verdict means "no parent in the loaded catalog" — a parent
+// might still exist at higher k beyond what we catalog.
+function isTrivialSubPatternOfHigherK(offsets, k) {
+    const candidates = [{offsets: offsets, mirror: false}];
+    const mir = (() => {
+        const max = offsets[offsets.length - 1];
+        return offsets.map(o => max - o).sort((a,b) => a-b);
+    })();
+    // Only check mirror if it's distinct (non-palindromic).
+    if (mir.some((v,i) => v !== offsets[i])) {
+        candidates.push({offsets: mir, mirror: true});
+    }
+    for (const kHi of Object.keys(KTUPLE_CATALOG).map(Number).sort((a,b)=>a-b)) {
+        if (kHi <= k) continue;
+        const pats = KTUPLE_CATALOG[kHi];
+        for (let idx = 0; idx < pats.length; idx++) {
+            const big = pats[idx].offsets;
+            const bigSet = new Set(big);
+            const bigMax = big[big.length - 1];
+            for (const cand of candidates) {
+                const offs = cand.offsets;
+                const offMax = offs[offs.length - 1];
+                const offCount = offs.length;
+                for (const c of big) {
+                    if (c + offMax > bigMax) break;
+                    let ok = true;
+                    for (let i = 0; i < offCount; i++) {
+                        if (!bigSet.has(offs[i] + c)) { ok = false; break; }
+                    }
+                    if (ok) return {k: kHi, idx, offsets: big, shift: c, viaMirror: cand.mirror};
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// Quick admissibility check for a base n against an offset pattern, using small primes.
+// Returns null if n is admissible at every prime in ADMISS_PRIMES (i.e. no member is
+// divisible by a small prime via that prime's bucket); otherwise returns the prime
+// at which it fails along with which offset hit.
+function admissibilityHit(base, offsets) {
+    for (const p of ADMISS_PRIMES) {
+        const pB = BigInt(p);
+        const r = Number(base % pB);
+        for (let i = 0; i < offsets.length; i++) {
+            const memberMod = (r + offsets[i]) % p;
+            if (memberMod === 0) {
+                // Hit ÷p. Special-case: if member equals p exactly (only possible
+                // when n is tiny), it's still prime; ignore.
+                if (base + BigInt(offsets[i]) !== pB) {
+                    return {prime: p, offsetIdx: i};
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// Primes up to 199 — used by the wheel-depth analysis. Matches the practical
+// upper bound of primorial wheels a real searcher would use (47#, 53#, …, 199#).
+const WHEEL_PRIMES = [
+    2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,
+    101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,
+];
+
+// wheelDepth: for a base and pattern offsets, walk the prime ladder and report
+// the deepest contiguous prime under which the base passes admissibility.
+//   chain[i]  = {prime, primorial, passes, hitOffsetIdx}
+//   deepestP  = largest prime such that all primes ≤ deepestP pass
+//   breakP    = first prime that fails (null if all primes in WHEEL_PRIMES pass)
+// A "pass" at p means no offset_i makes (base + offset_i) ≡ 0 (mod p) — except
+// for the trivial case where (base + offset_i) IS p (a tiny tuple base).
+// For record-grade bases (every member large prime), this passes for every
+// prime up to ~min(members), well beyond the WHEEL_PRIMES upper bound 199.
+function wheelDepth(base, offsets) {
+    const chain = [];
+    let deepestP = null;
+    let breakP = null;
+    let primorial = 1n;
+    for (const p of WHEEL_PRIMES) {
+        primorial *= BigInt(p);
+        const pB = BigInt(p);
+        const r = Number(base % pB);
+        let passes = true;
+        let hitOffsetIdx = -1;
+        for (let i = 0; i < offsets.length; i++) {
+            if ((r + offsets[i]) % p === 0) {
+                if (base + BigInt(offsets[i]) !== pB) {
+                    passes = false;
+                    hitOffsetIdx = i;
+                    break;
+                }
+            }
+        }
+        chain.push({prime: p, primorial, passes, hitOffsetIdx});
+        if (passes) {
+            if (breakP === null) deepestP = p; // still in the contiguous prefix
+        } else if (breakP === null) {
+            breakP = p;
+        }
+    }
+    return {chain, deepestP, breakP};
+}
+
+// Given a catalog modulus (e.g. 30030 = 2·3·5·7·11·13 = 13#), return its largest
+// prime factor (here 13). The minimum primorial wheel a search needs is the
+// smallest P# whose largest prime ≥ the modulus' largest prime factor — since
+// primorials are contiguous, that's P# where P = largest prime factor.
+// Not every catalog modulus is a pure primorial: e.g. 2730 = 2·3·5·7·13 skips
+// 11, but the minimum wheel is still 13# (the wheel just covers 11 "for free").
+// Returns null if the modulus has a prime factor outside WHEEL_PRIMES.
+function catMinPrimeFromMod(mod) {
+    if (!mod) return null;
+    let m = BigInt(mod);
+    let largest = null;
+    for (const p of WHEEL_PRIMES) {
+        const pB = BigInt(p);
+        while (m % pB === 0n) {
+            m /= pB;
+            largest = p;
+        }
+        if (m === 1n) break;
+    }
+    return m === 1n ? largest : null;
+}
+
+// Hardy-Littlewood density-at-scale estimate for prime k-tuplets matching a
+// pattern with singular-series constant H_k. The k-tuple conjecture predicts
+//   π_k(N) ≈ C_k · ∫_2^N dt / log(t)^k
+// so density at base N is C_k / log(N)^k and the mean gap between consecutive
+// k-tuplets is log(N)^k / C_k. Over a short interval [a, b] with slowly-varying
+// log, count ≈ C_k · (b - a) / log(N)^k.
+//
+// Caveat: catalog H_k is the *small-prime-truncated* singular series (factors
+// for primes p ≤ ~k only). The full C_k = H_k · tail, where tail is the
+// infinite product over p ≫ k and converges to a value in roughly [0.5, 0.95].
+// So our estimate is a mild over-count — fine for order-of-magnitude framing.
+function expectedTupletDensity(base, k, H_k) {
+    if (!H_k || H_k <= 0) return null;
+    const digits = base.toString().length;
+    const bits = base.toString(2).length;
+    if (bits < 8) return null; // asymptotic doesn't apply to tiny bases
+    const lnN = bits * Math.LN2;
+    const logK = Math.pow(lnN, k);
+    if (!isFinite(logK) || logK === 0) return null;
+    const density = H_k / logK;
+    const meanGap = logK / H_k;
+    // Expected count in the decade containing N: [10^(D-1), 10^D), length ≈ 9·10^(D-1)
+    const decadeLen = 9 * Math.pow(10, digits - 1);
+    const decadeCount = isFinite(decadeLen) ? density * decadeLen : null;
+    return {bits, digits, lnN, density, meanGap, decadeCount};
+}
+
+// Pattern scan: for a paste-in prime n, walk every catalogued + custom pattern,
+// compute (a) admissibility at small primes, (b) per-member primality up to first
+// composite. Returns one record per pattern with progress info.
+//
+// matchKind:
+//   'full'    — every member of the pattern is prime (n IS a base)
+//   'partial' — admissible but some member fails primality (returns kActual)
+//   'inadmissible' — fails the small-prime admissibility check (skipped, omitted by default)
+function scanPatterns(n, patterns, opts={}) {
+    const {includeInadmissible=false} = opts;
+    const out = [];
+    for (const pat of patterns) {
+        const k = pat.offsets.length;
+        const hit = admissibilityHit(n, pat.offsets);
+        if (hit) {
+            if (includeInadmissible) {
+                out.push({...pat, k, kActual: 0, kind: 'inadmissible', failingPrime: hit.prime});
+            }
+            continue;
+        }
+        // Walk members one by one
+        let kActual = 0;
+        let firstComposite = null;
+        for (let i = 0; i < pat.offsets.length; i++) {
+            const v = n + BigInt(pat.offsets[i]);
+            if (isPrime(v)) {
+                kActual++;
+            } else {
+                firstComposite = {idx: i, val: v};
+                break;
+            }
+        }
+        const kind = kActual === pat.offsets.length ? 'full' : 'partial';
+        out.push({...pat, k, kActual, kind, firstComposite});
+    }
+    // Sort: full matches first by k descending, then partial by kActual descending
+    out.sort((a,b) => {
+        if (a.kind !== b.kind) return a.kind === 'full' ? -1 : 1;
+        if (a.kind === 'full') return b.k - a.k || a.idx - b.idx;
+        return b.kActual - a.kActual || b.k - a.k;
+    });
+    return out;
+}
+
+// Parse a textarea of custom patterns. One pattern per line, comma-separated offsets.
+// Skip blank lines and lines starting with #. Discard malformed.
+function parseCustomPatterns(text) {
+    const out = [];
+    const lines = text.split(/\r?\n/);
+    for (let li = 0; li < lines.length; li++) {
+        const raw = lines[li].trim();
+        if (!raw || raw.startsWith('#') || raw.startsWith('//')) continue;
+        // Strip surrounding brackets
+        const inner = raw.replace(/^[\[\(\{]/, '').replace(/[\]\)\}]$/, '');
+        const parts = inner.split(/[,\s]+/).map(s => s.trim()).filter(Boolean);
+        const nums = parts.map(s => parseInt(s, 10));
+        if (nums.some(n => Number.isNaN(n) || n < 0)) continue;
+        const offsets = [...new Set(nums)].sort((a,b) => a-b);
+        if (offsets.length < 2 || offsets[0] !== 0) continue;
+        out.push({k: offsets.length, idx: -1, offsets, modulus: null, source: 'custom', lineNo: li+1});
+    }
+    return out;
+}
+
+// Parse user input — supports decimal, 0x hex, primorial like 123*53# or 53#*123-1.
+// Ported from the CC chain-analyzer v13.
+const PRIMORIAL_PRIMES = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113];
+function getPrimorial(p) {
+    let prod = 1n;
+    for (const q of PRIMORIAL_PRIMES) {
+        if (q > p) break;
+        prod *= BigInt(q);
+    }
+    return prod;
+}
+function parseInput(str) {
+    str = str.trim().replace(/×/g, '*');
+    const primorialFull = str.match(/^(\d+)\s*\*\s*(\d+)#\s*(?:\*\s*(\d+))?\s*([+\-]\s*\d+)?$/);
+    if (primorialFull) {
+        const k = BigInt(primorialFull[1]);
+        const p = parseInt(primorialFull[2]);
+        const m = primorialFull[3] ? BigInt(primorialFull[3]) : 1n;
+        const offset = primorialFull[4] ? BigInt(primorialFull[4].replace(/\s/g, '')) : 0n;
+        return k * getPrimorial(p) * m + offset;
+    }
+    const primorialBare = str.match(/^(\d+)#\s*(?:\*\s*(\d+))?\s*([+\-]\s*\d+)?$/);
+    if (primorialBare) {
+        const p = parseInt(primorialBare[1]);
+        const m = primorialBare[2] ? BigInt(primorialBare[2]) : 1n;
+        const offset = primorialBare[3] ? BigInt(primorialBare[3].replace(/\s/g, '')) : 0n;
+        return getPrimorial(p) * m + offset;
+    }
+    if (str.startsWith('0x') || str.startsWith('0X')) return BigInt(str);
+    if (/^[0-9]+$/.test(str)) return BigInt(str);
+    if (/^[0-9a-fA-F]+$/.test(str) && /[a-fA-F]/.test(str)) return BigInt('0x' + str);
+    throw new Error('Invalid format. Use: decimal, 0x hex, or primorial (e.g. 123*53#*2+1).');
+}
+
+function mirrorPattern(offsets) {
+    const max = offsets[offsets.length - 1];
+    return offsets.map(o => max - o).sort((a,b) => a-b);
+}
+
+function patternsEqual(a, b) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+    return true;
+}
+
+// admissibilityGrid: for each prime p, return array of {r, admissible}
+// where admissible means: a tuple based at n ≡ r (mod p) does not have any
+// member ≡ 0 (mod p). I.e. r ∉ {(-o_i) mod p}.
+// Pattern is "admissible at p" iff there exists some admissible r,
+// equivalently {-o_i mod p} != Z/pZ.
+function admissibilityGrid(offsets, baseResidueAt) {
+    const out = {};
+    for (const p of ADMISS_PRIMES) {
+        const forbidden = new Set();
+        for (const o of offsets) forbidden.add(((-o) % p + p) % p);
+        const row = [];
+        for (let r = 0; r < p; r++) {
+            row.push({
+                r,
+                admissible: !forbidden.has(r),
+                isCurrent: baseResidueAt[p] === r,
+            });
+        }
+        out[p] = {
+            row,
+            admissibleAtP: forbidden.size < p,
+            forbidden: [...forbidden].sort((a,b)=>a-b),
+            currentResidue: baseResidueAt[p],
+            currentAdmissible: !forbidden.has(baseResidueAt[p]),
+        };
+    }
+    return out;
+}
+
+// For one tuple member m, compute proximity (-range..+range) showing smallest factor.
+// Bound parameter controls how far trial division runs before falling back to '?'.
+function memberProximity(m, range=10, bound=1000) {
+    const out = [];
+    for (let d = -range; d <= range; d++) {
+        if (d === 0) continue;
+        const v = m + BigInt(d);
+        if (v < 2n) { out.push({delta:d, val:v, smallestFactor:null, prime:false, ofRange:true}); continue; }
+        const sf = smallestFactor(v, bound);
+        const prime = sf === null ? isPrime(v) : false;
+        out.push({delta:d, val:v, smallestFactor:sf, prime});
+    }
+    return out;
+}
+
+// Deterministic colour for a prime — same prime = same hue across panels.
+// Uses golden-angle hue spacing for pleasing separation across the small primes.
+function primeColor(p) {
+    if (p === null || p === undefined) return null;
+    const n = typeof p === 'bigint' ? Number(p) : Number(p);
+    const hue = (n * 137.508) % 360;
+    return {bg: `hsl(${hue}, 55%, 22%)`, fg: `hsl(${hue}, 75%, 70%)`};
+}
+
+// Detect stripes across members for the proximity panel.
+// stripes[d] = Map<smallestFactor, [memberIndex...]>, only entries with ≥2 members kept.
+// `skipDelta(d)` may be provided to exclude trivial Δs (e.g. always-÷2 columns).
+function detectStripes(bands, range, skipDelta) {
+    const stripes = [];
+    for (let d = -range; d <= range; d++) {
+        if (d === 0) continue;
+        if (skipDelta && skipDelta(d)) continue;
+        const factorMap = new Map();
+        bands.forEach((band, idx) => {
+            const cell = band.find(x => x.delta === d);
+            if (!cell || cell.smallestFactor === null) return;
+            const k = cell.smallestFactor.toString();
+            if (!factorMap.has(k)) factorMap.set(k, []);
+            factorMap.get(k).push(idx);
+        });
+        for (const [factorStr, members] of factorMap.entries()) {
+            if (members.length >= 2) stripes.push({delta: d, factor: BigInt(factorStr), members});
+        }
+    }
+    return stripes;
+}
+
+// Inter-member composite texture: positions 0..lastOffset.
+// Returns array of {pos, member: bool, offset, val, prime, smallestFactor}
+function interMemberTexture(base, offsets, bound=1000) {
+    const offSet = new Set(offsets);
+    const memberLookup = new Map();
+    offsets.forEach((o, i) => memberLookup.set(o, i));
+    const last = offsets[offsets.length - 1];
+    const out = [];
+    for (let pos = 0; pos <= last; pos++) {
+        const val = base + BigInt(pos);
+        if (offSet.has(pos)) {
+            // member position
+            const sf = smallestFactor(val, bound);
+            const prime = sf === null ? isPrime(val) : false;
+            out.push({pos, member:true, memberIdx: memberLookup.get(pos),
+                      val, prime, smallestFactor: sf});
+        } else {
+            // forced-composite (or just composite) inter-member position
+            const sf = smallestFactor(val, bound);
+            const prime = sf === null ? isPrime(val) : false;
+            out.push({pos, member:false, val, prime, smallestFactor: sf});
+        }
+    }
+    return out;
+}
+
+// Histogram of smallest-prime-factor counts across non-member positions.
+function compositeFactorHistogram(texture) {
+    const hist = new Map();
+    let total = 0, unknown = 0, primes = 0;
+    for (const c of texture) {
+        if (c.member) continue;
+        total++;
+        if (c.prime) { primes++; continue; }
+        if (c.smallestFactor === null) { unknown++; continue; }
+        const k = Number(c.smallestFactor);
+        hist.set(k, (hist.get(k) || 0) + 1);
+    }
+    // Rough expected count under "smallest factor = p" baseline,
+    // multiplied by number of positions. Density ≈ (1/p) * Π_{q<p}(1-1/q).
+    const primesAsc = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97];
+    const expected = new Map();
+    let surv = 1.0;
+    for (const p of primesAsc) {
+        const dens = surv * (1 / p);
+        expected.set(p, dens * total);
+        surv *= (1 - 1 / p);
+    }
+    const keys = [...new Set([...hist.keys(), ...expected.keys()])]
+        .filter(p => hist.has(p) || expected.get(p) >= 0.5)
+        .sort((a, b) => a - b);
+    return {hist, expected, total, unknown, primes, keys};
+}
+
+// ---- Control-candidate generation ----
+// Generate a random admissible base of similar bit-size for the same offset pattern.
+// Strategy: if we know modulus M and a valid residue r (from modCheck), sample r + j*M
+// for random j; otherwise rejection-sample within bit-range.
+function generateControlBase(refBase, offsets, modCheck, maxAttempts=4000) {
+    const refBits = refBase.toString(2).length;
+    const lo = 1n << BigInt(refBits - 1);
+    const hi = (1n << BigInt(refBits)) - 1n;
+    function randBigIntInRange(a, b) {
+        const span = b - a + 1n;
+        const bits = span.toString(2).length;
+        const bytes = Math.ceil(bits / 8);
+        const u = new Uint8Array(bytes);
+        for (let tries = 0; tries < 64; tries++) {
+            crypto.getRandomValues(u);
+            let n = 0n;
+            for (const x of u) n = (n << 8n) | BigInt(x);
+            n = n % span;
+            if (n + a <= b) return n + a;
+        }
+        return a + (BigInt(Math.floor(Math.random() * Number(span < 1n<<30n ? span : 1n<<30n))));
+    }
+
+    const sieveCheck = (cand) => {
+        for (const p of [2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n,37n,41n,43n,47n,53n,59n,61n,67n,71n,73n,79n,83n,89n,97n,101n,103n,107n,109n,113n]) {
+            for (const o of offsets) {
+                if ((cand + BigInt(o)) % p === 0n && (cand + BigInt(o)) !== p) return false;
+            }
+        }
+        return true;
+    };
+
+    let attempts = 0;
+    if (modCheck && modCheck.modulus) {
+        const M = BigInt(modCheck.modulus);
+        const r = BigInt(modCheck.baseMod);
+        const jmin = (lo - r + M) / M;
+        const jmax = (hi - r) / M;
+        if (jmax > jmin) {
+            while (attempts < maxAttempts) {
+                attempts++;
+                const j = randBigIntInRange(jmin, jmax);
+                const cand = r + j * M;
+                if (cand < lo || cand > hi) continue;
+                if (sieveCheck(cand)) return {base: cand, attempts, method: `CRT mod ${modCheck.modulus}`};
+            }
+        }
+    }
+    // Fallback: rejection sample
+    while (attempts < maxAttempts) {
+        attempts++;
+        const cand = randBigIntInRange(lo, hi) | 1n;
+        if (sieveCheck(cand)) return {base: cand, attempts, method: 'rejection'};
+    }
+    return null;
+}
+
+// analyze(base, offsets, ctx?) — base is BigInt prime/composite the user pasted;
+// offsets is the pattern under inspection (one of the catalog/custom matches).
+// ctx is optional metadata (e.g. {source: 'catalog k=18 #1'}) carried into the result.
+function analyze(base, offsets, ctx={}) {
+    base = BigInt(base);
+    const baseResidueAt = {};
+    for (const p of ADMISS_PRIMES) baseResidueAt[p] = Number(base % BigInt(p));
+
+    const members = offsets.map((o, i) => {
+        const val = base + BigInt(o);
+        const prime = isPrime(val);
+        const bits = val.toString(2).length;
+        const sf = prime ? null : smallestFactor(val, 100000);
+        const v2pm1 = v2(val - 1n);
+        const v2pp1 = v2(val + 1n);
+        const residues = {};
+        for (const p of RESIDUE_PRIMES) residues[p] = Number(val % BigInt(p));
+        return {i, offset: o, val, bits, prime, smallestFactor: sf,
+                v2pm1, v2pp1, residues};
+    });
+
+    const grid = admissibilityGrid(offsets, baseResidueAt);
+    const isAdmissiblePattern = ADMISS_PRIMES.every(p => grid[p].admissibleAtP);
+    const baseAdmissibleAtAll = ADMISS_PRIMES.every(p => grid[p].currentAdmissible);
+
+    const primeCount = members.filter(m => m.prime).length;
+    const k = offsets.length;
+    const fullKtuplet = primeCount === k;
+    const v2pm1List = members.map(m => m.v2pm1);
+    const v2pp1List = members.map(m => m.v2pp1);
+    const aggregate = {
+        v2pm1: {min: Math.min(...v2pm1List), max: Math.max(...v2pm1List), mean: v2pm1List.reduce((a,b)=>a+b,0)/k},
+        v2pp1: {min: Math.min(...v2pp1List), max: Math.max(...v2pp1List), mean: v2pp1List.reduce((a,b)=>a+b,0)/k},
+    };
+
+    const catMatch = findCatalogMatch(k, offsets);
+    const minWidth = MIN_WIDTH_SK[k] ?? null;
+    const width = offsets[offsets.length - 1];
+    const widthOverMin = (minWidth !== null) ? width - minWidth : null;
+
+    const mirror = mirrorPattern(offsets);
+    const isPalindromic = patternsEqual(offsets, mirror);
+    const mirrorMatch = !isPalindromic ? findCatalogMatch(k, mirror) : null;
+
+    // Modulus/residue info for the chosen pattern (if catalog has it).
+    const modSrc = catMatch || mirrorMatch || null;
+    let modCheck = null;
+    if (modSrc && modSrc.modulus) {
+        modCheck = {
+            modulus: modSrc.modulus,
+            baseMod: Number(base % BigInt(modSrc.modulus)),
+            H_k: modSrc.H_k ?? null,
+        };
+    }
+
+    // Wheel-depth ladder: the deepest primorial under which this base + pattern
+    // satisfies admissibility. The catalog's "modulus" gives the *minimum* wheel a
+    // search must use to enumerate the right residue class; wheelDepth.deepestP
+    // gives the *maximum* wheel the search could plausibly have used.
+    const wd = wheelDepth(base, offsets);
+    const catMinP = modCheck ? catMinPrimeFromMod(modCheck.modulus) : null;
+
+    // Trivial / non-trivial classification: does some higher-k catalog pattern
+    // contain this pattern as a sub-tuple? If so, any prime k'-tuplet matching
+    // the larger pattern produces this k-tuplet for free (Luhn's terminology).
+    const trivialParent = isTrivialSubPatternOfHigherK(offsets, k);
+
+    // Hardy-Littlewood density estimate at this scale — uses the matched
+    // pattern's H_k if available. Mirror match's H_k works too (mirror shares H_k).
+    const hkSrc = catMatch?.H_k ?? mirrorMatch?.H_k ?? null;
+    const density = hkSrc != null ? expectedTupletDensity(base, k, hkSrc) : null;
+
+    return {ctx, base, offsets, k, members, grid,
+            isAdmissiblePattern, baseAdmissibleAtAll,
+            primeCount, fullKtuplet, aggregate, baseResidueAt,
+            catMatch, minWidth, width, widthOverMin,
+            mirror, isPalindromic, mirrorMatch, modCheck, wd, catMinP, trivialParent, density};
+}
+
+// ===== URL helpers =====
+function getUrlParams() {
+    const p = new URLSearchParams(window.location.search);
+    return {
+        n: p.get('n') || '',
+        offsets: p.get('offsets') || '',
+        fmt: p.get('fmt') || 'dec',
+    };
+}
+function updateUrl({n, offsets, fmt}) {
+    const url = new URL(window.location);
+    if (n) url.searchParams.set('n', n); else url.searchParams.delete('n');
+    if (offsets) url.searchParams.set('offsets', offsets); else url.searchParams.delete('offsets');
+    if (fmt) url.searchParams.set('fmt', fmt); else url.searchParams.delete('fmt');
+    window.history.replaceState({}, '', url);
+}
+function generateShareLink({n, offsets, fmt}) {
+    const url = new URL(window.location.origin + window.location.pathname);
+    if (n) url.searchParams.set('n', n);
+    if (offsets) url.searchParams.set('offsets', offsets);
+    if (fmt) url.searchParams.set('fmt', fmt);
+    return url.toString();
+}
+
+// ===== REACT COMPONENTS =====
+
+function CollapsiblePanel({title, badge, bc, defaultOpen=true, forceOpen, children}){
+    const [open, setOpen] = useState(defaultOpen);
+    const isOpen = forceOpen !== undefined ? forceOpen : open;
+    return (
+        <div className="panel">
+            <div className="panel-h" onClick={() => setOpen(!open)}>
+                <span className={`arrow ${isOpen ? 'open' : ''}`}>▶</span>
+                <h2>{title}</h2>
+                {badge && <span className={`badge ${bc || 'bg'}`}>{badge}</span>}
+            </div>
+            <div className={`panel-b ${isOpen ? '' : 'collapsed'}`}>{children}</div>
+        </div>
+    );
+}
+
+function P({k, v, mono}) {
+    return <div className="prop"><span className="prop-k">{k}</span><span className={`prop-v ${mono?'mono':''}`}>{v}</span></div>;
+}
+
+function CopyBox({value, label}) {
+    const [copied, setCopied] = useState(false);
+    const copy = () => navigator.clipboard.writeText(value).then(() => {
+        setCopied(true); setTimeout(()=>setCopied(false), 1500);
+    });
+    return (
+        <div className={`copybox ${copied?'copied':''}`} onClick={copy} title="Click to copy full value">
+            {label && <span style={{color:'var(--tx2)', marginRight:'4px'}}>{label}:</span>}
+            {value}
+        </div>
+    );
+}
+
+// ----- Number-line panel: show offsets 0..max, mark members, color by primality -----
+function NumberLinePanel({res}) {
+    const maxOff = res.offsets[res.offsets.length - 1];
+    // For density, build a cell for every position from 0..maxOff
+    const offsetSet = new Set(res.offsets);
+    const memberByOffset = new Map();
+    res.members.forEach(m => memberByOffset.set(m.offset, m));
+
+    const cells = [];
+    for (let o = 0; o <= maxOff; o++) {
+        if (offsetSet.has(o)) {
+            const m = memberByOffset.get(o);
+            cells.push({
+                kind: 'member',
+                delta: o,
+                prime: m.prime,
+                marker: m.prime ? '●' : '✗',
+                tip: `+${o}: ${m.prime ? 'PRIME' : `÷${m.smallestFactor || '?'}`}`,
+            });
+        } else {
+            cells.push({kind: 'gap', delta: o, marker: '·', tip: `+${o} (gap)`});
+        }
+    }
+
+    return (
+        <div>
+            <div className="offset-pills">
+                {res.offsets.map((o, i) => (
+                    <span key={i} className="offset-pill">+{o}</span>
+                ))}
+            </div>
+            <div className="nl-wrap">
+                <div className="nl-row">
+                    {cells.map((c, i) => (
+                        <div key={i}
+                             className={`nl-cell ${c.kind} ${c.kind==='member' ? (c.prime?'prime':'composite'):''}`}
+                             title={c.tip}>
+                            <span className="delta">+{c.delta}</span>
+                            <span className="marker">{c.marker}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div className="note">
+                Pattern width: {maxOff} | k = {res.k} | density = {(res.k/(maxOff+1)*100).toFixed(1)}%
+            </div>
+        </div>
+    );
+}
+
+// ----- Members table -----
+function MembersPanel({res, fmt}) {
+    return (
+        <div className="chain-wrap">
+            <table className="ctbl">
+                <thead><tr>
+                    <th>#</th>
+                    <th>+d</th>
+                    <th>Value</th>
+                    <th className="num">Bits</th>
+                    {RESIDUE_PRIMES.map(p => <th key={p} style={{textAlign:'center'}}>%{p}</th>)}
+                    <th className="num">ν₂(m−1)</th>
+                    <th className="num">ν₂(m+1)</th>
+                    <th>Status</th>
+                </tr></thead>
+                <tbody>
+                    {res.members.map(m => (
+                        <tr key={m.i} className={m.prime?'prime-row':'comp-row'}>
+                            <td className="idx">{m.i}</td>
+                            <td className="num" style={{color:'var(--orange)'}}>+{m.offset}</td>
+                            <td className="val" style={{cursor:'pointer'}}
+                                onClick={()=>navigator.clipboard.writeText(fmt==='dec'?m.val.toString():toHex(m.val))}
+                                title="Click to copy">
+                                {fmtVal(m.val, fmt)}
+                            </td>
+                            <td className="num">{m.bits}</td>
+                            {RESIDUE_PRIMES.map(p => {
+                                const r = m.residues[p];
+                                const hit = !m.prime && r === 0;
+                                return <td key={p} className={`res ${hit?'hit':''}`}>{r}</td>;
+                            })}
+                            <td className="num">{m.v2pm1}</td>
+                            <td className="num">{m.v2pp1}</td>
+                            <td>
+                                {m.prime ? <span style={{color:'var(--green)'}}>✓ PRIME</span>
+                                : <span style={{color:'var(--red)'}}>÷{m.smallestFactor?.toString() || '?'}</span>}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+// ----- 2-adic per-member visualization -----
+//
+// Each m±1 sits at a unique position in the 2-adic binary tree the CC analyzer's
+// 2adic-tree explorer renders: row = bits(odd_core), column = odd_core − 2^(row−1),
+// climb depth = ν₂. Two numbers in the same column share the same odd core; they
+// differ only by a power of 2. So the "tree position" of m±1 is the pair
+// (odd_core, climb), and whether the odd core itself is prime tells you whether
+// m±1 has the doubled-prime structure (m±1 = 2^k · q with q prime).
+function TwoAdicTreeCell({tree, sign, fmt}) {
+    // Render the full tree-position info inline (no tooltip needed):
+    //   line 1: ν₂ · bits · core-prime indicator
+    //   line 2: row r, col {value}, odd: {value} — both honour the global DEC/HEX toggle
+    const oddDec = tree.oddCore.toString();
+    const oddHex = '0x' + tree.oddCore.toString(16).toUpperCase();
+    const colVal = tree.oddCore - (1n << BigInt(tree.row - 1));
+    const colDec = colVal.toString();
+    const colHex = '0x' + colVal.toString(16).toUpperCase();
+    const isHex = fmt !== 'dec';
+    const colShown = isHex ? colHex : colDec;
+    const oddShown = isHex ? oddHex : oddDec;
+    const tooltipFull = `dec: ${oddDec} (${oddDec.length}d)\nhex: ${oddHex}\ncol dec: ${colDec}\ncol hex: ${colHex}`;
+    return (
+        <div style={{lineHeight:1.35, fontSize:'9px', padding:'1px 0'}}>
+            <div style={{display:'flex', gap:'10px', alignItems:'center'}}>
+                <span><span style={{color:'var(--tx2)'}}>ν₂</span> <span style={{color:'var(--cyan)', fontWeight:700}}>{tree.climb}</span></span>
+                <span><span style={{color:'var(--tx2)'}}>bits</span> <span style={{color:'var(--tx0)'}}>{tree.bits}</span></span>
+                <span style={{color: tree.isPrime ? 'var(--green)' : 'var(--tx2)',
+                              fontWeight: tree.isPrime ? 700 : 400}}>
+                    {tree.isPrime ? '✓ doubled-prime' : '· composite core'}
+                </span>
+            </div>
+            <div style={{display:'flex', gap:'12px', alignItems:'baseline', flexWrap:'wrap',
+                         color:'var(--tx2)', whiteSpace:'nowrap'}}>
+                <span>
+                    row <span style={{color:'var(--blue)', fontWeight:700}}>{tree.row}</span>
+                    {' '}col{' '}
+                    <span style={{color:'var(--cyan)', cursor:'pointer'}}
+                          onClick={()=>navigator.clipboard.writeText(colShown)}
+                          title={`Click to copy column ${isHex?'hex':'dec'}\n${tooltipFull}`}>
+                        {colShown}
+                    </span>
+                </span>
+                <span>
+                    odd:{' '}
+                    <span style={{color:'var(--cyan)', cursor:'pointer'}}
+                          onClick={()=>navigator.clipboard.writeText(oddShown)}
+                          title={`Click to copy odd-core(m${sign}1) ${isHex?'hex':'dec'}\n${tooltipFull}`}>
+                        {oddShown}
+                    </span>
+                </span>
+            </div>
+        </div>
+    );
+}
+
+function TwoAdicPanel({res, fmt}) {
+    const agg = res.aggregate;
+    const k = res.k;
+    return (
+        <div>
+            <div className="stat">
+                <span>ν₂(m−1) <strong>min={agg.v2pm1.min}</strong> max={agg.v2pm1.max} mean={agg.v2pm1.mean.toFixed(2)}</span>
+                <span>ν₂(m+1) <strong>min={agg.v2pp1.min}</strong> max={agg.v2pp1.max} mean={agg.v2pp1.mean.toFixed(2)}</span>
+                <span>odd-core(m−1) prime in <strong style={{color: agg.oddCorePm1Primes>0?'var(--green)':'var(--tx2)'}}>{agg.oddCorePm1Primes}/{k}</strong> members</span>
+                <span>odd-core(m+1) prime in <strong style={{color: agg.oddCorePp1Primes>0?'var(--green)':'var(--tx2)'}}>{agg.oddCorePp1Primes}/{k}</strong> members</span>
+            </div>
+            <div className="chain-wrap">
+                <table className="ctbl">
+                    <thead><tr>
+                        <th style={{width:'22px'}}>#</th>
+                        <th style={{width:'40px'}}>+d</th>
+                        <th>2-adic tree position of m−1</th>
+                        <th>2-adic tree position of m+1</th>
+                    </tr></thead>
+                    <tbody>
+                        {res.members.map(m => (
+                            <tr key={m.i}>
+                                <td className="idx">{m.i}</td>
+                                <td className="num" style={{color:'var(--orange)'}}>+{m.offset}</td>
+                                <td><TwoAdicTreeCell tree={m.treePm1} sign="−" fmt={fmt} /></td>
+                                <td><TwoAdicTreeCell tree={m.treePp1} sign="+" fmt={fmt} /></td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="note">
+                <strong>Tree coordinates</strong>: in the CC 2-adic tree explorer, every odd integer q is a column at row=bits(q),
+                col=q−2^(row−1). The chain m±1 → (m±1)/2 → (m±1)/4 … climbs <em>up</em> one row per ÷2 step, ending at the
+                odd core. So <code>r{`{ROW}`}/{`{COL}`}</code> uniquely identifies which column of the 2-adic tree a number's odd core sits in,
+                and ν₂ tells you how many ×2 descents from the column anchor down to m±1.
+                A green ✓ in "core prime?" means m±1 = 2^ν · q with q prime — the so-called doubled-prime structure
+                (and the natural lift target for Cunningham-chain extension of that ±1 sibling).
+            </div>
+            <div className="note">
+                CC analyzer note: in a CC, ν₂(p−1) is dictated by the chain step;
+                in a k-tuple, members are at additive offsets so the 2-adic structure
+                is independent. Crossovers (matching values across all members) are the surprising case —
+                so are clusters where many members' odd cores happen to be prime simultaneously.
+            </div>
+        </div>
+    );
+}
+
+// ----- CRT Admissibility grid -----
+function AdmissibilityPanel({res}) {
+    const primes = ADMISS_PRIMES;
+    const inadmissibleAtAny = primes.filter(p => !res.grid[p].admissibleAtP);
+    const baseInForbidden = primes.filter(p => res.grid[p].admissibleAtP && !res.grid[p].currentAdmissible);
+    return (
+        <div>
+            <div className="ag-meta">
+                <span>Pattern admissible: {res.isAdmissiblePattern
+                    ? <strong style={{color:'var(--green)'}}>YES</strong>
+                    : <strong style={{color:'var(--red)'}}>NO at p={inadmissibleAtAny.join(',')}</strong>}</span>
+                <span>Base lands in admissible cell at all shown primes:
+                    {res.baseAdmissibleAtAll
+                        ? <strong style={{color:'var(--green)'}}> YES</strong>
+                        : <strong style={{color:'var(--red)'}}> NO at p={baseInForbidden.join(',')}</strong>}</span>
+            </div>
+            <div className="ag-wrap">
+                <table className="ag-tbl">
+                    <thead><tr>
+                        <th>p \ r</th>
+                        {Array.from({length: primes[primes.length-1]}, (_,i) => i).map(i => (
+                            <th key={i}>{i}</th>
+                        ))}
+                    </tr></thead>
+                    <tbody>
+                        {primes.map(p => {
+                            const row = res.grid[p].row;
+                            const inadmissible = !res.grid[p].admissibleAtP;
+                            const cells = [];
+                            for (let r = 0; r < primes[primes.length-1]; r++) {
+                                if (r >= p) {
+                                    cells.push(<td key={r} style={{background:'var(--bg0)'}}></td>);
+                                    continue;
+                                }
+                                const cell = row[r];
+                                const cls = [
+                                    cell.admissible ? 'adm' : 'forbid',
+                                    cell.isCurrent ? 'current' : '',
+                                    inadmissible ? 'bad-row' : '',
+                                ].join(' ');
+                                cells.push(
+                                    <td key={r} className={cls}
+                                        title={`p=${p} r=${r} ${cell.admissible?'admissible':'forbidden'}${cell.isCurrent?' (current base)':''}`}>
+                                        {cell.admissible ? '·' : '✗'}
+                                    </td>
+                                );
+                            }
+                            return (
+                                <tr key={p}>
+                                    <td className="prime-label">{p}</td>
+                                    {cells}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+            <div className="note">
+                Cell shows whether base ≡ r (mod p) yields a tuple with NO member ≡ 0 (mod p).
+                Highlighted cell = current base's residue. A row entirely red ⇒ the offset pattern is inadmissible at that prime.
+            </div>
+        </div>
+    );
+}
+
+// ----- Composite proximity bands (member-centric ±range matrix) -----
+function ProximityPanel({res, fmt}) {
+    const RANGE_OPTIONS = [4, 10, 25, 50, 100];
+    const [range, setRange] = useState(50);
+    const [bands, setBands] = useState(null);
+    const [computing, setComputing] = useState(false);
+    const [hideTrivial2, setHideTrivial2] = useState(true);
+
+    useEffect(() => {
+        setComputing(true);
+        // Tighter bound for tiny ranges; expand for wide windows so we don't see lots of '?'.
+        const bound = range <= 10 ? 1000 : range <= 25 ? 3000 : range <= 50 ? 10000 : 30000;
+        // Stagger so the UI doesn't freeze on big k × big range.
+        const t0 = performance.now();
+        const out = [];
+        let i = 0;
+        const step = () => {
+            for (let n = 0; n < 4 && i < res.members.length; n++, i++) {
+                out[i] = memberProximity(res.members[i].val, range, bound);
+            }
+            if (i < res.members.length) {
+                setTimeout(step, 0);
+            } else {
+                setBands(out);
+                setComputing(false);
+                if (range >= 50) {
+                    console.log(`[k-tuplet] proximity range=±${range} computed in ${Math.round(performance.now()-t0)} ms`);
+                }
+            }
+        };
+        setBands(null);
+        setTimeout(step, 10);
+    }, [res, range]);
+
+    // All record-grade tuple members are odd, so (member + Δ) is even iff Δ is odd.
+    // When that's the case, every such cell trivially shows ÷2 — useless texture.
+    // We let the user hide those columns; default ON to leave room for the interesting Δs.
+    const allMembersOdd = res.members.every(m => (m.val % 2n) === 1n);
+    const skipDelta = (d) => hideTrivial2 && allMembersOdd && (d % 2 !== 0);
+
+    if (!bands || computing) {
+        return (
+            <div>
+                <div className="range-btns">
+                    <label>Range:</label>
+                    {RANGE_OPTIONS.map(r => (
+                        <button key={r}
+                            className={`depth-btn ${r===range?'active':''}`}
+                            onClick={()=>setRange(r)}>±{r}</button>
+                    ))}
+                    <label style={{marginLeft:'8px', display:'flex', alignItems:'center', gap:'3px'}}>
+                        <input type="checkbox" checked={hideTrivial2}
+                               onChange={e => setHideTrivial2(e.target.checked)} />
+                        Hide ÷2 columns
+                    </label>
+                </div>
+                <div className="loading">Computing proximity at ±{range}…</div>
+            </div>
+        );
+    }
+
+    const stripes = detectStripes(bands, range, skipDelta);
+    // Index stripes for fast cell-level lookup: stripeAt[d][memberIdx] = factor or null
+    const stripeAt = {};
+    stripes.forEach(s => {
+        if (!stripeAt[s.delta]) stripeAt[s.delta] = {};
+        s.members.forEach(idx => { stripeAt[s.delta][idx] = s.factor.toString(); });
+    });
+
+    // Δ values to render (after optional even-value filtering).
+    const deltas = [];
+    for (let d = -range; d <= range; d++) {
+        if (d !== 0 && skipDelta(d)) continue;
+        deltas.push(d);
+    }
+    const hiddenCount = (range * 2) - (deltas.length - 1); // exclude Δ=0
+
+    const headerCells = deltas.map(d => (
+        d === 0
+            ? <div key={d} className="cp-cell" style={{fontWeight:700, color:'var(--cyan)'}}>m</div>
+            : <div key={d} className="cp-cell"><span className="δ">{d>0?'+':''}{d}</span></div>
+    ));
+    return (
+        <div>
+            <div className="range-btns">
+                <label>Range:</label>
+                {RANGE_OPTIONS.map(r => (
+                    <button key={r}
+                        className={`depth-btn ${r===range?'active':''}`}
+                        onClick={()=>setRange(r)}>±{r}</button>
+                ))}
+                <label style={{marginLeft:'8px', display:'flex', alignItems:'center', gap:'3px',
+                               color: hideTrivial2 ? 'var(--cyan)' : 'var(--tx2)'}}>
+                    <input type="checkbox" checked={hideTrivial2}
+                           onChange={e => setHideTrivial2(e.target.checked)} />
+                    Hide ÷2 columns
+                </label>
+                {hideTrivial2 && allMembersOdd && hiddenCount > 0 && (
+                    <span style={{color:'var(--tx2)', fontSize:'9px'}}>
+                        ({hiddenCount} odd-Δ columns hidden — every member is even there)
+                    </span>
+                )}
+                <span style={{color:'var(--tx2)', fontSize:'9px', marginLeft:'8px'}}>
+                    Stripes detected: <strong style={{color: stripes.length ? 'var(--yellow)' : 'var(--tx2)'}}>{stripes.length}</strong>
+                </span>
+            </div>
+            <div style={{overflowX:'auto'}}>
+                <div className="cp-row">
+                    <div className="cp-label" style={{background:'transparent', color:'var(--tx2)'}}>member \ Δ</div>
+                    {headerCells}
+                </div>
+                {res.members.map((m, idx) => {
+                    const band = bands[idx];
+                    const cells = [];
+                    for (const d of deltas) {
+                        if (d === 0) {
+                            cells.push(
+                                <div key={d} className={`cp-cell center ${m.prime?'prime-cell':''}`}
+                                     title={`Member ${m.i}: ${m.prime?'PRIME':`÷${m.smallestFactor||'?'}`}`}>
+                                    <span style={{fontWeight:700}}>{m.prime?'P':'C'}</span>
+                                </div>
+                            );
+                            continue;
+                        }
+                        const b = band.find(x => x.delta === d);
+                        if (!b) { cells.push(<div key={d} className="cp-cell"></div>); continue; }
+                        let label, cls = 'cp-cell';
+                        const stripeFactor = stripeAt[d]?.[idx];
+                        if (b.prime) { label = 'P'; cls += ' prime-cell'; }
+                        else if (b.smallestFactor) { label = b.smallestFactor.toString(); cls += ' has-factor'; }
+                        else { label = '?'; }
+                        if (stripeFactor !== undefined) cls += ' stripe';
+                        const col = b.smallestFactor && !b.prime ? primeColor(b.smallestFactor) : null;
+                        const cellStyle = col ? {background: col.bg, color: col.fg} : undefined;
+                        cells.push(
+                            <div key={d} className={cls} style={cellStyle}
+                                 title={`m${d>0?'+':''}${d}: ${b.prime?'PRIME':`÷${b.smallestFactor||'>bound'}`}${stripeFactor?` (stripe with others on factor ${stripeFactor})`:''}`}>
+                                {label}
+                            </div>
+                        );
+                    }
+                    return (
+                        <div key={m.i} className="cp-row">
+                            <div className={`cp-label ${m.prime?'prime':'composite'}`}>m{m.i} (+{m.offset})</div>
+                            {cells}
+                        </div>
+                    );
+                })}
+            </div>
+            {stripes.length > 0 && (
+                <div style={{marginTop:'8px'}}>
+                    <div style={{fontSize:'10px', color:'var(--yellow)', fontWeight:700, marginBottom:'4px'}}>
+                        ⚡ Stripes (≥2 members share smallest factor at the same Δ)
+                    </div>
+                    <div className="stripe-list" style={{maxHeight:'160px', overflowY:'auto'}}>
+                        {stripes.map((s, i) => (
+                            <div key={i} className="item">
+                                <span className="delta">Δ={s.delta>0?'+':''}{s.delta}</span>
+                                <span className="factor">÷{s.factor.toString()}</span>
+                                <span style={{color:'var(--tx2)', marginLeft:'6px'}}>
+                                    members {s.members.map(i => `m${res.members[i].i}`).join(', ')}
+                                    ({s.members.length}/{res.members.length})
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+            <div className="note">
+                Each cell shows the smallest prime factor of m+Δ (or "P" if probably prime).
+                Cells outlined in yellow are part of a stripe — same smallest factor across multiple members at this Δ.
+                Cell colours hash from the prime, so the same prime is the same colour throughout.
+                "Hide ÷2 columns" drops odd Δs, where (member + Δ) is even and trivially ÷2 — toggle off to see them.
+            </div>
+        </div>
+    );
+}
+
+// ----- Inter-member composite texture (positions 0..lastOffset of the tuple) -----
+function InterMemberCompositesPanel({res, fmt}) {
+    const [texture, setTexture] = useState(null);
+    const [computing, setComputing] = useState(false);
+    const [boundIdx, setBoundIdx] = useState(1);
+    const BOUND_OPTIONS = [1000, 5000, 20000, 100000];
+    useEffect(() => {
+        setComputing(true);
+        setTexture(null);
+        const t0 = performance.now();
+        const bound = BOUND_OPTIONS[boundIdx];
+        // Compute in chunks to keep UI responsive on wide tuples.
+        const last = res.offsets[res.offsets.length - 1];
+        const out = new Array(last + 1);
+        const offSet = new Set(res.offsets);
+        const memberLookup = new Map();
+        res.offsets.forEach((o, i) => memberLookup.set(o, i));
+        let pos = 0;
+        const step = () => {
+            for (let n = 0; n < 16 && pos <= last; n++, pos++) {
+                const val = res.base + BigInt(pos);
+                const sf = smallestFactor(val, bound);
+                const prime = sf === null ? isPrime(val) : false;
+                out[pos] = offSet.has(pos)
+                    ? {pos, member:true, memberIdx: memberLookup.get(pos), val, prime, smallestFactor: sf}
+                    : {pos, member:false, val, prime, smallestFactor: sf};
+            }
+            if (pos <= last) setTimeout(step, 0);
+            else {
+                setTexture(out);
+                setComputing(false);
+                console.log(`[k-tuplet] inter-member texture (${last+1} positions, bound=${bound}) in ${Math.round(performance.now()-t0)} ms`);
+            }
+        };
+        setTimeout(step, 10);
+    }, [res, boundIdx]);
+
+    if (!texture || computing) {
+        return (
+            <div>
+                <div className="range-btns">
+                    <label>Sieve bound:</label>
+                    {BOUND_OPTIONS.map((b, i) => (
+                        <button key={b} className={`depth-btn ${i===boundIdx?'active':''}`}
+                            onClick={()=>setBoundIdx(i)}>{b.toLocaleString()}</button>
+                    ))}
+                </div>
+                <div className="loading">Computing inter-member texture (bound={BOUND_OPTIONS[boundIdx].toLocaleString()})…</div>
+            </div>
+        );
+    }
+
+    const last = res.offsets[res.offsets.length - 1];
+    const memberOffsetsArr = res.offsets;
+    const histInfo = compositeFactorHistogram(texture);
+    // For tooltip nearest-member offsets
+    const nearestOffsets = (pos) => {
+        let lo = null, hi = null;
+        for (const o of memberOffsetsArr) {
+            if (o < pos) lo = o;
+            else if (o > pos) { hi = o; break; }
+            else { lo = hi = o; break; }
+        }
+        const parts = [];
+        if (lo !== null) parts.push(`m@+${lo} +${pos - lo}`);
+        if (hi !== null && hi !== lo) parts.push(`m@+${hi} −${hi - pos}`);
+        return parts.join(', ');
+    };
+
+    // Axis row (every 5)
+    const axisCells = [];
+    for (let pos = 0; pos <= last; pos++) {
+        axisCells.push(
+            <div key={pos} className="imc-axis-cell">
+                {(pos % 5 === 0 || pos === last) ? pos : ''}
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div className="range-btns">
+                <label>Sieve bound:</label>
+                {BOUND_OPTIONS.map((b, i) => (
+                    <button key={b} className={`depth-btn ${i===boundIdx?'active':''}`}
+                        onClick={()=>setBoundIdx(i)}>{b.toLocaleString()}</button>
+                ))}
+                <span style={{color:'var(--tx2)', fontSize:'9px', marginLeft:'8px'}}>
+                    Width = {last} | members {res.k} | inter-member positions {last - res.k + 1}
+                </span>
+            </div>
+            <div className="imc-wrap">
+                <div className="imc-row">
+                    {texture.map((c, i) => {
+                        if (c.member) {
+                            const cls = `imc-cell member ${c.prime?'prime':'composite'}`;
+                            return (
+                                <div key={i} className={cls}
+                                     title={`+${c.pos} = base+${c.pos} (member m${c.memberIdx}): ${c.prime?'PRIME':`÷${c.smallestFactor||'>bound'}`}`}>
+                                    <span className="o">+{c.pos}</span>
+                                    <span>{c.prime?'P':'C'}</span>
+                                </div>
+                            );
+                        }
+                        // non-member position: forced composite by admissibility
+                        let label, style = null;
+                        if (c.prime) {
+                            label = 'P';
+                            style = {background: 'rgba(52,211,153,.20)', color:'var(--green)'};
+                        } else if (c.smallestFactor !== null) {
+                            label = c.smallestFactor.toString();
+                            const col = primeColor(c.smallestFactor);
+                            style = {background: col.bg, color: col.fg};
+                        } else {
+                            label = '?';
+                            style = {background: 'var(--bg3)', color: 'var(--tx2)'};
+                        }
+                        return (
+                            <div key={i} className="imc-cell" style={style}
+                                 title={`+${c.pos}: ${c.prime?'PRIME (unexpected!)':`÷${c.smallestFactor||'>bound'}`} | ${nearestOffsets(c.pos)}`}>
+                                <span className="o">+{c.pos}</span>
+                                <span>{label}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className="imc-row" style={{marginTop:'2px'}}>
+                    {axisCells}
+                </div>
+            </div>
+
+            {/* Density histogram */}
+            <div style={{marginTop:'10px'}}>
+                <div style={{fontSize:'10px', color:'var(--cyan)', fontWeight:700, marginBottom:'4px'}}>
+                    Smallest-factor histogram across {histInfo.total} inter-member positions
+                </div>
+                <div style={{fontSize:'9px', color:'var(--tx2)', marginBottom:'4px'}}>
+                    Cyan tick = expected count under uniform smallest-factor distribution (1/p · Π_{`{q<p}`}(1−1/q) · total).
+                    Bars longer than the tick = that prime appears more often than chance.
+                </div>
+                <div className="hist-wrap">
+                    <div style={{color:'var(--tx2)'}}>p</div>
+                    <div style={{color:'var(--tx2)'}}>count vs expected</div>
+                    <div style={{color:'var(--tx2)', textAlign:'right'}}>actual</div>
+                    <div style={{color:'var(--tx2)', textAlign:'right'}}>expected</div>
+                    {histInfo.keys.map(p => {
+                        const actual = histInfo.hist.get(p) || 0;
+                        const exp = histInfo.expected.get(p) || 0;
+                        const maxScale = Math.max(actual, exp, 1) * 1.3;
+                        const col = primeColor(p);
+                        const dev = actual - exp;
+                        const devColor = dev > exp * 0.3 ? 'var(--orange)' : dev < -exp * 0.3 ? 'var(--blue)' : 'var(--tx0)';
+                        return (
+                            <React.Fragment key={p}>
+                                <div style={{color: col.fg, fontWeight:700}}>{p}</div>
+                                <div className="hist-bar">
+                                    <div className="fill" style={{width: `${actual/maxScale*100}%`, background: col.fg}}></div>
+                                    <div className="expected" style={{left: `${exp/maxScale*100}%`}}></div>
+                                </div>
+                                <div style={{textAlign:'right', color: devColor, fontWeight: dev>0?700:400}}>{actual}</div>
+                                <div style={{textAlign:'right', color:'var(--tx2)'}}>{exp.toFixed(2)}</div>
+                            </React.Fragment>
+                        );
+                    })}
+                    {histInfo.unknown > 0 && (
+                        <>
+                            <div style={{color:'var(--tx2)'}}>?</div>
+                            <div style={{color:'var(--tx2)', fontStyle:'italic'}}>positions where smallest factor &gt; bound={BOUND_OPTIONS[boundIdx].toLocaleString()}</div>
+                            <div style={{textAlign:'right', color:'var(--tx2)'}}>{histInfo.unknown}</div>
+                            <div></div>
+                        </>
+                    )}
+                    {histInfo.primes > 0 && (
+                        <>
+                            <div style={{color:'var(--green)', fontWeight:700}}>P</div>
+                            <div style={{color:'var(--green)'}}>inter-member positions that are themselves prime (unexpected — would be a denser tuple if so)</div>
+                            <div style={{textAlign:'right', color:'var(--green)', fontWeight:700}}>{histInfo.primes}</div>
+                            <div></div>
+                        </>
+                    )}
+                </div>
+            </div>
+
+            <div className="note">
+                Inter-member positions in the closed interval [base, base+{last}] are guaranteed composite by
+                admissibility for any record-grade tuple. The cells above show <em>which</em> small prime kills each.
+                Same colour = same prime; horizontal/vertical regularities expose how the admissibility constraints
+                are realised at this particular base.
+            </div>
+        </div>
+    );
+}
+
+// ----- Per-member deep factorization -----
+function DeepFactBlock({n, seedDepth=0, seedResult=null}) {
+    const [depth, setDepth] = useState(seedDepth);
+    const [computed, setComputed] = useState(seedResult ? {[seedDepth]: seedResult} : {});
+    const [computing, setComputing] = useState(false);
+
+    // Accept new seed values (e.g., when parent finishes auto-D1 batch)
+    useEffect(() => {
+        if (seedResult && seedDepth > 0) {
+            setComputed(prev => prev[seedDepth] ? prev : {...prev, [seedDepth]: seedResult});
+            setDepth(prev => prev === 0 ? seedDepth : prev);
+        }
+    }, [seedResult, seedDepth]);
+
+    const compute = useCallback((d) => {
+        if (computed[d] || computing) return;
+        setComputing(true);
+        setTimeout(() => {
+            const r = computeDeepFact(BigInt(n), d, 0, new Map());
+            setComputed(prev => ({...prev, [d]: r}));
+            setDepth(d); setComputing(false);
+        }, 10);
+    }, [n, computed, computing]);
+    return (
+        <div>
+            <div className="depth-btns">
+                {[1,2,3,4].map(d => (
+                    <button key={d}
+                        className={`depth-btn ${depth===d?'active':''} ${computing?'computing':''}`}
+                        onClick={()=>compute(d)} disabled={computing}>D{d}</button>
+                ))}
+            </div>
+            {depth === 0 && <div style={{color:'var(--tx2)', fontSize:'9px'}}>Click D1..D4</div>}
+            {computed[depth] && <DeepFactTree deep={computed[depth]} />}
+        </div>
+    );
+}
+function DeepFactTree({deep, depth=0}) {
+    if (!deep) return null;
+    return (
+        <div style={{marginLeft: depth>0 ? 10 : 0}}>
+            <div className="fact">{deep.taggedStr || deep.factStr}</div>
+            {deep.children && deep.children.length > 0 && (
+                <div className="fact-tree">
+                    {deep.children.map((child, i) => (
+                        <div key={i} className="fact-item">
+                            <span className="prime">{child.prime.toString().length>20 ? `P${child.bits}b` : child.prime.toString()}</span>
+                            <span style={{color:'var(--tx2)', fontSize:'8px', marginLeft:'4px'}}>({child.bits}b)</span>
+                            <div style={{marginLeft:8, marginTop:2}}>
+                                <span style={{color:'var(--tx2)', fontSize:'8px'}}>−1 = </span>
+                                <span className="sub">{child.pm1?.taggedStr || child.pm1?.factStr || '1'}</span>
+                            </div>
+                            <div style={{marginLeft:8}}>
+                                <span style={{color:'var(--tx2)', fontSize:'8px'}}>+1 = </span>
+                                <span className="sub">{child.pp1?.taggedStr || child.pp1?.factStr || '1'}</span>
+                            </div>
+                            {child.pm1?.children?.length > 0 && <DeepFactTree deep={child.pm1} depth={depth+1} />}
+                            {child.pp1?.children?.length > 0 && <DeepFactTree deep={child.pp1} depth={depth+1} />}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+function PerMemberFactPanel({res, expandAll, autoD1}) {
+    // d1Cache[i] = {pm1: deep, pp1: deep}
+    const [d1Cache, setD1Cache] = useState({});
+    const [progress, setProgress] = useState(0);
+    const [running, setRunning] = useState(false);
+    const [elapsedMs, setElapsedMs] = useState(0);
+
+    useEffect(() => {
+        // reset on record change
+        setD1Cache({});
+        setProgress(0);
+        setRunning(false);
+        setElapsedMs(0);
+    }, [res]);
+
+    useEffect(() => {
+        if (!autoD1) return;
+        if (Object.keys(d1Cache).length === res.members.length) return;
+        let cancelled = false;
+        setRunning(true);
+        const t0 = performance.now();
+        const cache = {...d1Cache};
+        let i = 0;
+        const step = () => {
+            if (cancelled) return;
+            if (i >= res.members.length) {
+                setRunning(false);
+                setElapsedMs(Math.round(performance.now() - t0));
+                return;
+            }
+            const m = res.members[i];
+            if (!cache[m.i]) {
+                const pm1 = computeDeepFact(m.val - 1n, 1, 0, new Map());
+                const pp1 = computeDeepFact(m.val + 1n, 1, 0, new Map());
+                cache[m.i] = {pm1, pp1};
+                setD1Cache({...cache});
+            }
+            i++;
+            setProgress(Math.round(i / res.members.length * 100));
+            // Yield back to the browser between members so the UI stays responsive.
+            setTimeout(step, 0);
+        };
+        setTimeout(step, 10);
+        return () => { cancelled = true; };
+    }, [res, autoD1]);
+
+    return (
+        <div>
+            {autoD1 && running && (
+                <div className="loading" style={{padding:'4px 8px', textAlign:'left', color:'var(--yellow)'}}>
+                    Computing D1 for all {res.members.length} members… {progress}%
+                </div>
+            )}
+            {autoD1 && !running && elapsedMs > 0 && (
+                <div className="note" style={{marginBottom:'4px'}}>
+                    D1 computed for all {res.members.length} members in {elapsedMs} ms.
+                    Click D2/D3/D4 on any member for deeper recursion.
+                </div>
+            )}
+            <div className="grid2">
+                {res.members.map(m => {
+                    const seed = d1Cache[m.i];
+                    return (
+                        <CollapsiblePanel
+                            key={m.i}
+                            title={`m${m.i} (+${m.offset}) ${m.prime?'✓PRIME':'✗comp'}`}
+                            badge={`${m.bits}b`}
+                            bc={m.prime?'bg-g':'bg-r'}
+                            defaultOpen={autoD1}
+                            forceOpen={expandAll || undefined}>
+                            <div style={{fontSize:'9px', color:'var(--tx2)', marginBottom:'4px'}}>
+                                ν₂(m−1)={m.v2pm1} | ν₂(m+1)={m.v2pp1} |
+                                smooth(m−1)≤31 = {m.smPm1.smoothBits}b/{m.smPm1.remBits}b cofactor |
+                                smooth(m+1)≤31 = {m.smPp1.smoothBits}b/{m.smPp1.remBits}b cofactor
+                            </div>
+                            <div className="dlayer"><span className="lbl">m−1</span></div>
+                            <DeepFactBlock n={m.val - 1n}
+                                seedDepth={seed ? 1 : 0} seedResult={seed?.pm1 || null} />
+                            <div className="dlayer" style={{marginTop:6}}><span className="lbl">m+1</span></div>
+                            <DeepFactBlock n={m.val + 1n}
+                                seedDepth={seed ? 1 : 0} seedResult={seed?.pp1 || null} />
+                        </CollapsiblePanel>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+// ----- Pattern catalog & lineage panel -----
+function PatternBlock({offsets, k, label, highlight}) {
+    if (!offsets || offsets.length === 0) return null;
+    return (
+        <div style={{
+            padding:'4px 6px', borderRadius:'3px', marginBottom:'3px',
+            background: highlight ? 'rgba(52,211,153,.12)' : 'var(--bg3)',
+            border: highlight ? '1px solid var(--green)' : '1px solid var(--border)',
+        }}>
+            <div style={{fontSize:'9px', color:'var(--tx2)', marginBottom:'2px'}}>
+                {label} {k && <span style={{color:'var(--blue)'}}>(k={k})</span>}
+                {highlight && <span style={{color:'var(--green)', marginLeft:'4px'}}>← current</span>}
+            </div>
+            <div style={{fontSize:'10px', color:'var(--cyan)', wordBreak:'break-all'}}>
+                d = {offsets.join(', ')}
+            </div>
+            <div className="note" style={{marginTop:'2px'}}>
+                width = {offsets[offsets.length-1]} | k = {offsets.length}
+            </div>
+        </div>
+    );
+}
+
+// Wheel-depth panel: prime-by-prime admissibility ladder, plus a summary
+// showing the catalog minimum and the maximum wheel consistent with this base.
+function WheelDepthPanel({res, forceOpen}) {
+    const wd = res.wd;
+    if (!wd) return null;
+    const minMod = res.modCheck?.modulus ?? null;
+    const catMinP = res.catMinP;
+    const deepest = wd.deepestP;
+    const lastTested = wd.chain[wd.chain.length - 1].prime;
+    const allPass = wd.breakP === null;
+    const fmtBig = (n) => n.toString().length <= 16 ? n.toString() : n.toString().slice(0,8) + '…' + n.toString().slice(-6);
+
+    return (
+        <CollapsiblePanel
+            title="Wheel-depth ladder (primorials this base is consistent with)"
+            badge={allPass ? `≥ ${deepest}#` : `≤ ${deepest}#`}
+            bc={allPass ? 'bg-g' : 'bg-y'}
+            forceOpen={forceOpen}>
+            <div className="wheel-summary">
+                {catMinP && (
+                    <span>
+                        <span className="label">catalog minimum:</span>{' '}
+                        <span className="val">{catMinP}#</span>{' '}
+                        <span style={{color:'var(--tx2)'}}>= {minMod}</span>
+                    </span>
+                )}
+                <span>
+                    <span className="label">consistent up to:</span>{' '}
+                    <span className="val" style={{color: allPass ? 'var(--green)' : 'var(--yellow)'}}>
+                        {deepest}#
+                    </span>{' '}
+                    <span style={{color:'var(--tx2)'}}>
+                        = {fmtBig(wd.chain.find(c => c.prime === deepest)?.primorial ?? 1n)}
+                    </span>
+                </span>
+                {!allPass && (
+                    <span>
+                        <span className="label">breaks at:</span>{' '}
+                        <span className="val" style={{color:'var(--red)'}}>÷{wd.breakP}</span>
+                    </span>
+                )}
+                {allPass && (
+                    <span style={{color:'var(--tx2)'}}>
+                        (all primes tested up to {lastTested}# pass; deeper primes not checked)
+                    </span>
+                )}
+            </div>
+            <div className="wheel-ladder">
+                {wd.chain.map((r, i) => {
+                    const isCatMin = r.prime === catMinP;
+                    const tooSmall = catMinP !== null && r.passes && r.prime < catMinP;
+                    let state;
+                    if (!r.passes) state = 'fail';
+                    else if (tooSmall) state = 'too-small';
+                    else state = 'pass';
+                    const cls = `wheel-rung ${state} ${isCatMin ? 'cat-min' : ''}`;
+                    const mark = state === 'fail' ? '✗' : state === 'too-small' ? '—' : '✓';
+                    const title = !r.passes
+                        ? `${r.prime}# breaks: base+offsets[${r.hitOffsetIdx}] (= +${res.offsets[r.hitOffsetIdx]}) is divisible by ${r.prime}`
+                        : tooSmall
+                            ? `${r.prime}# = ${r.primorial.toString()} · base passes admissibility at p=${r.prime}, but this wheel is BELOW the catalog minimum (${catMinP}#) — a search using only ${r.prime}# cannot enumerate this pattern's residue class.`
+                            : `${r.prime}# = ${r.primorial.toString()} · base passes admissibility at p=${r.prime} · viable wheel choice for the search`;
+                    return (
+                        <div key={i} className={cls} title={title}>
+                            <span className="p-label">{r.prime}#</span>
+                            <span className="mark">{mark}</span>
+                        </div>
+                    );
+                })}
+            </div>
+            <div className="note">
+                Reading guide: each rung shows whether base + offsets is coprime to every prime ≤ p AND whether that
+                wheel is large enough to enumerate the pattern's residue class.
+                {' '}<span style={{color:'var(--green)'}}>green ✓</span> = base passes here AND wheel is feasible
+                (≥ catalog minimum).
+                {' '}<span style={{color:'var(--tx2)'}}>gray —</span> = base passes here but wheel is below the
+                catalog minimum, so a search using only this wheel could not have found the pattern.
+                {' '}<span style={{color:'var(--red)'}}>red ✗</span> = base fails admissibility at this prime.
+                The <strong style={{color:'var(--cyan)'}}>cyan-outlined</strong> rung (if present) marks the catalog's
+                minimum required primorial. The rightmost ✓ marks the maximum primorial the search could plausibly have
+                used. For a record-grade base, the search-side primorial (e.g. <code>--primorial</code> CLI choice) sits
+                somewhere in <code>[catalog min, rightmost ✓]</code>.
+            </div>
+        </CollapsiblePanel>
+    );
+}
+
+// Format a positive real in compact scientific or fixed form, depending on size.
+function fmtSci(x, digits=3) {
+    if (x === null || x === undefined || !isFinite(x)) return '—';
+    if (x === 0) return '0';
+    const absX = Math.abs(x);
+    if (absX >= 1e-3 && absX < 1e6) {
+        if (absX >= 100) return x.toFixed(0);
+        if (absX >= 1) return x.toFixed(2);
+        return x.toFixed(digits);
+    }
+    return x.toExponential(digits - 1);
+}
+
+function DensityPanel({res, forceOpen}) {
+    const d = res.density;
+    if (!d) return null;
+    const hkSrc = res.catMatch?.H_k ?? res.mirrorMatch?.H_k ?? null;
+    const hkVia = res.catMatch?.H_k != null ? 'direct catalog match'
+                : res.mirrorMatch?.H_k != null ? 'mirror catalog match'
+                : 'unknown';
+    return (
+        <CollapsiblePanel
+            title="Hardy-Littlewood density at this scale"
+            badge={`~1 every ${fmtSci(d.meanGap)} ints`}
+            bc="bg" forceOpen={forceOpen}>
+            <div className="wheel-summary">
+                <span>
+                    <span className="label">scale:</span>{' '}
+                    <span className="val">{d.digits} digits</span>{' '}
+                    <span style={{color:'var(--tx2)'}}>({d.bits} bits, ln N ≈ {d.lnN.toFixed(2)})</span>
+                </span>
+                <span>
+                    <span className="label">H_k used:</span>{' '}
+                    <span className="val">{fmtSci(hkSrc)}</span>{' '}
+                    <span style={{color:'var(--tx2)'}}>({hkVia})</span>
+                </span>
+                <span>
+                    <span className="label">density:</span>{' '}
+                    <span className="val">{fmtSci(d.density)}</span>{' '}
+                    <span style={{color:'var(--tx2)'}}>per integer near N</span>
+                </span>
+                <span>
+                    <span className="label">mean gap:</span>{' '}
+                    <span className="val">{fmtSci(d.meanGap)}</span>{' '}
+                    <span style={{color:'var(--tx2)'}}>integers between consecutive k={res.k}-tuplets</span>
+                </span>
+                <span>
+                    <span className="label">expected in decade:</span>{' '}
+                    <span className="val">{fmtSci(d.decadeCount)}</span>{' '}
+                    <span style={{color:'var(--tx2)'}}>in [10<sup>{d.digits-1}</sup>, 10<sup>{d.digits}</sup>)</span>
+                </span>
+            </div>
+            <div className="note">
+                Hardy-Littlewood k-tuple conjecture: prime k-tuplets matching an admissible pattern have density
+                {' '}<code>C_k / log(N)<sup>k</sup></code> near a large base N. So the mean spacing between consecutive
+                k-tuplets near N is <code>log(N)<sup>k</sup> / C_k</code>, and the count over a short window [a, b] is
+                <code>C_k · (b − a) / log(N)<sup>k</sup></code>.
+                {' '}<em>Caveat:</em> catalog <code>H_k</code> is the singular series truncated to small primes
+                (factors for p ≤ ~k only). The full <code>C_k = H_k · tail</code> where the tail product over
+                p ≫ k converges to roughly 0.5–0.95, so this is a mild over-count — useful for
+                order-of-magnitude framing, not precise prediction.
+                {res.density.decadeCount != null && res.density.decadeCount > 1e6 && (
+                    <> <strong>Interpretation:</strong> at this scale the expected k={res.k}-tuplet count per decade
+                    is enormous, so a record here is not <em>rare</em> in the absolute sense — it's a search-effort
+                    record (computationally hard to enumerate, not statistically improbable).</>
+                )}
+                {res.density.decadeCount != null && res.density.decadeCount > 0 && res.density.decadeCount < 100 && (
+                    <> <strong>Interpretation:</strong> at this scale only ~{fmtSci(res.density.decadeCount)} k={res.k}-tuplets
+                    are expected per decade — a record here genuinely is statistically rare.</>
+                )}
+            </div>
+        </CollapsiblePanel>
+    );
+}
+
+function CatalogPanel({res, forceOpen}) {
+    const cat = KTUPLE_CATALOG[res.k] || [];
+    const currentSig = sigOf(res.offsets);
+    return (
+        <div className="grid2">
+            <CollapsiblePanel
+                title={`Catalog patterns at k=${res.k}`}
+                badge={`${cat.length} known`} bc="bg" forceOpen={forceOpen}>
+                {cat.length === 0 && <div style={{color:'var(--tx2)', fontSize:'9px'}}>No catalog patterns at this k.</div>}
+                {cat.map((c, i) => {
+                    const isCurrent = sigOf(c.offsets) === currentSig;
+                    const label = `Pattern #${i+1}  ${c.H_k != null ? `H_k=${c.H_k}` : ''}  mod=${c.modulus}`;
+                    return <PatternBlock key={i} offsets={c.offsets} k={null} label={label} highlight={isCurrent} />;
+                })}
+                <div className="note">Source: pzktupel.de/ktpatt_hl.php (k=2..28).</div>
+            </CollapsiblePanel>
+
+            <CollapsiblePanel
+                title="Mirror & Symmetry"
+                badge={res.isPalindromic ? 'palindromic' : 'mirrored'}
+                bc={res.isPalindromic ? 'bg-g' : 'bg-y'} forceOpen={forceOpen}>
+                <div style={{marginBottom:'8px', display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center'}}>
+                    <span style={{fontSize:'11px', color:'var(--tx2)'}}>Pattern class:</span>
+                    {res.trivialParent
+                        ? <span style={{padding:'3px 8px', background:'rgba(251,191,36,.15)', borderRadius:'3px', color:'var(--yellow)', fontSize:'11px'}}
+                                title={`This pattern's offsets${res.trivialParent.viaMirror ? ' (via mirror)' : ''}, shifted by +${res.trivialParent.shift}, are a subset of catalog k=${res.trivialParent.k} #${res.trivialParent.idx+1}. Any prime k=${res.trivialParent.k}-tuplet matching the bigger pattern produces this k=${res.k} pattern for free.`}>
+                            trivial sub-pattern of k={res.trivialParent.k} #{res.trivialParent.idx+1}
+                            {' '}<span style={{color:'var(--tx2)', fontWeight:'normal'}}>
+                                (offset shift +{res.trivialParent.shift}{res.trivialParent.viaMirror ? ', via mirror' : ''})
+                            </span>
+                          </span>
+                        : <span style={{padding:'3px 8px', background:'rgba(52,211,153,.15)', borderRadius:'3px', color:'var(--green)', fontSize:'11px'}}
+                                title="No catalog pattern at higher k (k=2..28 loaded) contains this pattern or its mirror as a sub-tuple. A record matching this pattern is non-trivial within our catalog scope — independent search effort, not derived from a larger-k discovery.">
+                            non-trivial (no larger-k catalog parent)
+                          </span>
+                    }
+                </div>
+                <PatternBlock offsets={res.offsets} k={res.k} label="This pattern" highlight />
+                <PatternBlock
+                    offsets={res.mirror}
+                    k={res.k}
+                    label={res.isPalindromic
+                        ? 'Mirror = self'
+                        : res.mirrorMatch
+                            ? `Mirror = catalog #${res.mirrorMatch.idx + 1}`
+                            : 'Mirror image (not in our catalog)'}
+                    highlight={res.isPalindromic} />
+                {res.trivialParent && (
+                    <PatternBlock
+                        offsets={res.trivialParent.offsets}
+                        k={res.trivialParent.k}
+                        label={`Larger-k parent: catalog k=${res.trivialParent.k} #${res.trivialParent.idx+1} (shift +${res.trivialParent.shift})`} />
+                )}
+                <div className="note">
+                    A pattern and its mirror (max−d, sorted) cover the same residue classes mod every prime
+                    and share H_k. Palindromic patterns are equal to their mirror.
+                    {' '}<strong>Trivial/non-trivial:</strong> a pattern is <em>trivial</em> if its offsets (or its
+                    mirror's offsets, after a constant shift) are a subset of some catalog pattern with higher k —
+                    any prime k′-tuplet matching the bigger pattern produces this one for free. Only <em>non-trivial</em>
+                    patterns require an independent search effort. Matches Luhn's pzktupel.de terminology.
+                    {' '}<em>Note:</em> this is a <strong>structural</strong> check against the loaded catalog
+                    (k=2..28, sparse above k=24). It says nothing about whether a record at the larger-k parent has
+                    actually been found, and a "non-trivial" verdict means "no parent in our catalog" — a parent
+                    might exist at higher k beyond what we list.
+                </div>
+            </CollapsiblePanel>
+        </div>
+    );
+}
+
+// ===== Pattern-match scanner panel =====
+function MatchesPanel({matches, selectedSig, onSelect, forceOpen}) {
+    const full = matches.filter(m => m.kind === 'full');
+    const partial = matches.filter(m => m.kind === 'partial');
+    return (
+        <div>
+            <div className="matches-stats">
+                <span>scanned: <strong>{matches.length}</strong></span>
+                <span>full matches: <strong style={{color: full.length ? 'var(--green)' : 'var(--tx2)'}}>{full.length}</strong></span>
+                <span>partial: <strong>{partial.length}</strong></span>
+                <span style={{color:'var(--tx2)'}}>(inadmissible patterns omitted)</span>
+            </div>
+            {matches.length === 0 && (
+                <div style={{padding:'8px', color:'var(--tx2)', fontSize:'10px'}}>
+                    No catalogued or custom pattern is admissible at this base. Either the input is divisible by a
+                    small prime that all relevant patterns force a member onto, or the input doesn't fit any pattern
+                    in the catalog (≤k=28).
+                </div>
+            )}
+            <div className="matches-shell">
+                {matches.map((m, i) => {
+                    const sig = sigOf(m.offsets);
+                    const isSel = sig === selectedSig;
+                    const cls = `match-card ${m.kind} ${isSel?'selected':''}`;
+                    const sourceLabel = m.source === 'custom' ? `custom @ line ${m.lineNo}` : `catalog k=${m.k} #${m.idx + 1}`;
+                    return (
+                        <div key={i} className={cls} onClick={() => onSelect(m)}>
+                            <div className="match-head">
+                                <span className="k">k={m.k}</span>
+                                {m.kind === 'full'
+                                    ? <span className="full-badge">✓ FULL k={m.k}</span>
+                                    : <span className="partial-badge">{m.kActual}/{m.k} prime</span>}
+                                <span className="source">{sourceLabel}</span>
+                                {m.H_k != null && <span className="h-k">H_k={m.H_k}</span>}
+                                {m.modulus != null && <span style={{fontSize:'9px',color:'var(--tx2)'}}>mod {m.modulus}</span>}
+                            </div>
+                            <div className="match-offsets">d = [{m.offsets.join(', ')}]</div>
+                            <div className="match-detail">
+                                width {m.offsets[m.offsets.length-1]}
+                                {m.kind === 'partial' && m.firstComposite && (
+                                    <> · first composite at +{m.offsets[m.firstComposite.idx]} (member {m.firstComposite.idx})</>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+function CustomPatternsArea({text, onChange, parsed}) {
+    return (
+        <div className="custom-area">
+            <div className="head">
+                <span className="lbl">★ Custom patterns</span>
+                <span className="count">{parsed.length} parsed</span>
+            </div>
+            <textarea
+                value={text}
+                placeholder={'One pattern per line, comma-separated offsets. Example:\n0,2,6,8\n0,4,6,10,12,16\n# lines starting with # are ignored'}
+                onChange={e => onChange(e.target.value)} />
+            <div className="help">
+                Each pattern must start with 0 and have ascending offsets. Patterns are merged into the scan and
+                appear as "custom @ line N" in the matches list. Persisted in the URL via the <code>?n=…</code> share.
+            </div>
+        </div>
+    );
+}
+
+// ===== MAIN APP =====
+function App() {
+    const urlParams = getUrlParams();
+    const [input, setInput] = useState(urlParams.n);
+    const [customText, setCustomText] = useState('');
+    const [fmt, setFmt] = useState(urlParams.fmt);
+    const [base, setBase] = useState(null);            // BigInt
+    const [matches, setMatches] = useState(null);
+    const [selectedSig, setSelectedSig] = useState(urlParams.offsets || null);
+    const [res, setRes] = useState(null);
+    const [scanning, setScanning] = useState(false);
+    const [scanMs, setScanMs] = useState(0);
+    const [err, setErr] = useState(null);
+    const [expandAll, setExpandAll] = useState(false);
+    const [copied, setCopied] = useState('');
+
+    // Examples to seed the input box.
+    const examples = [
+        {l:'twin (5,7)',         v:'5'},
+        {l:'sextuplet @ 7',      v:'7'},
+        {l:'k=18 record',        v:'1906230835046648293290043'},
+        {l:'k=21 record',        v:'622803914376064301858782434517'},
+        {l:'primorial 53#·2−1',  v:'53#*2-1'},
+    ];
+
+    const customPatterns = useMemo(() => parseCustomPatterns(customText), [customText]);
+
+    const runScan = useCallback(() => {
+        setScanning(true); setErr(null); setExpandAll(false);
+        setMatches(null); setRes(null);
+        setTimeout(() => {
+            try {
+                const n = parseInput(input);
+                if (n < 2n) throw new Error('Input must be ≥ 2.');
+                const t0 = performance.now();
+                const allPats = [...customPatterns, ...allCatalogPatterns()];
+                const ms = scanPatterns(n, allPats);
+                const t1 = performance.now();
+                setBase(n);
+                setMatches(ms);
+                setScanMs(Math.round(t1 - t0));
+                // Pick selection: prefer URL-provided offsets if it matched, else top match
+                let sel = null;
+                if (selectedSig) {
+                    sel = ms.find(m => sigOf(m.offsets) === selectedSig) || null;
+                }
+                if (!sel) sel = ms[0] || null;
+                if (sel) {
+                    const newSig = sigOf(sel.offsets);
+                    setSelectedSig(newSig);
+                    setRes(analyze(n, sel.offsets, {match: sel}));
+                    updateUrl({n: input, offsets: newSig, fmt});
+                } else {
+                    setSelectedSig(null);
+                    updateUrl({n: input, offsets: '', fmt});
+                }
+            } catch (e) {
+                setErr(e.message); setRes(null); setMatches(null);
+            }
+            setScanning(false);
+        }, 20);
+    }, [input, customPatterns, fmt, selectedSig]);
+
+    // Initial run if URL had ?n=…
+    useEffect(() => { if (urlParams.n) runScan(); }, []);
+
+    const selectMatch = (m) => {
+        const sig = sigOf(m.offsets);
+        setSelectedSig(sig);
+        setRes(analyze(base, m.offsets, {match: m}));
+        updateUrl({n: input, offsets: sig, fmt});
+    };
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(generateShareLink({n: input, offsets: selectedSig, fmt}));
+        setCopied('link'); setTimeout(()=>setCopied(''), 1500);
+    };
+
+    const baseLine = base ? base.toString() : '';
+    const baseHex = base ? toHex(base) : '';
+
+    return (
+        <div className="app">
+            <div className="topbar">
+                <h1>★ k-Tuplet Analyzer v3.1</h1>
+                <span style={{fontSize:'9px', color:'var(--tx2)'}}>paste prime → match against ≤k=28 patterns</span>
+                <input
+                    type="text" value={input}
+                    onChange={e => setInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') runScan(); }}
+                    placeholder="0x..., decimal, or k*p#*m±d (primorial)"
+                    style={{flex:1, minWidth:'260px'}} />
+                <button className="btn primary" onClick={runScan} disabled={scanning}>
+                    {scanning ? '…' : 'Analyze'}
+                </button>
+                <select value={fmt} onChange={e => { setFmt(e.target.value); if (res) updateUrl({n: input, offsets: selectedSig, fmt: e.target.value}); }}>
+                    <option value="dec">DEC</option>
+                    <option value="hex">HEX</option>
+                </select>
+                {res && <button className="btn btn-expand" onClick={() => setExpandAll(!expandAll)}>{expandAll?'Collapse':'Expand All'}</button>}
+                <button className="btn btn-expand" onClick={handleShare}>{copied==='link'?'✓ Copied':'🔗 Share'}</button>
+                <div style={{display:'flex', gap:'3px', flexWrap:'wrap'}}>
+                    {examples.map((ex, i) => (
+                        <button key={i} className="btn btn-expand" onClick={() => setInput(ex.v)}>{ex.l}</button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Custom patterns area, always visible */}
+            <CustomPatternsArea text={customText} onChange={setCustomText} parsed={customPatterns} />
+
+            {err && <div className="err">{err}</div>}
+            {scanning && <div className="loading">Scanning {customPatterns.length + allCatalogPatterns().length} patterns…</div>}
+
+            {/* Pattern matches list — shows even before a pattern is selected */}
+            {matches && !scanning && (<>
+                <div className="section-title">
+                    ★ Pattern Matches
+                    <span style={{fontSize:'9px', color:'var(--tx2)', marginLeft:'8px'}}>
+                        scan in {scanMs} ms · base bits = {base.toString(2).length}
+                    </span>
+                </div>
+                {/* Quick header showing pasted base */}
+                <div className="panel" style={{padding:'6px 8px'}}>
+                    <div style={{fontSize:'10px', color:'var(--tx2)'}}>
+                        Input: {fmt === 'hex' ? baseHex.slice(0,40) + (baseHex.length > 40 ? '…' : '') : (baseLine.length > 50 ? baseLine.slice(0,30) + '…' + baseLine.slice(-12) : baseLine)}
+                        {' '}· {base.toString().length} digits · {base.toString(2).length} bits
+                        {' '}· itself prime: {isPrime(base)
+                            ? <strong style={{color:'var(--green)'}}>YES</strong>
+                            : <strong style={{color:'var(--red)'}}>NO</strong>}
+                    </div>
+                </div>
+                <MatchesPanel matches={matches} selectedSig={selectedSig} onSelect={selectMatch} forceOpen={expandAll||undefined} />
+            </>)}
+
+            {res && !scanning && (<>
+                {/* ===== Selected-pattern banner ===== */}
+                <div style={{display:'flex', gap:'14px', padding:'10px 16px', background:'var(--bg2)',
+                             borderRadius:'6px', marginBottom:'10px', alignItems:'center', flexWrap:'wrap',
+                             border:'1px solid var(--border)'}}>
+                    <div style={{fontSize:'11px', color:'var(--tx2)'}}>Selected pattern:</div>
+                    <div style={{display:'flex', alignItems:'baseline', gap:'4px'}}>
+                        <span style={{fontSize:'22px', fontWeight:700,
+                                color: res.fullKtuplet ? 'var(--green)' :
+                                       res.primeCount >= res.k - 2 ? 'var(--yellow)' : 'var(--red)'}}>
+                            {res.primeCount}/{res.k}
+                        </span>
+                        <span style={{fontSize:'10px', color:'var(--tx2)'}}>members prime</span>
+                    </div>
+                    {res.fullKtuplet && (
+                        <div style={{padding:'4px 10px', background:'var(--green)', borderRadius:'4px',
+                                     color:'#000', fontWeight:700, fontSize:'11px'}}>
+                            ✓ FULL k={res.k} TUPLET
+                        </div>
+                    )}
+                    {res.isAdmissiblePattern
+                        ? <span style={{padding:'2px 6px', background:'rgba(52,211,153,.2)', borderRadius:'3px', color:'var(--green)', fontSize:'10px'}}>admissible pattern</span>
+                        : <span style={{padding:'2px 6px', background:'rgba(248,113,113,.2)', borderRadius:'3px', color:'var(--red)', fontSize:'10px'}}>INADMISSIBLE pattern</span>
+                    }
+                    <div style={{fontSize:'10px', color:'var(--tx2)'}}>
+                        Width: {res.width}
+                        {res.minWidth !== null && (
+                            <> {' '}/ s({res.k})={res.minWidth}{' '}
+                                <span style={{color: res.widthOverMin === 0 ? 'var(--green)' : 'var(--yellow)'}}>
+                                    {res.widthOverMin === 0 ? '✓ minimal' : `+${res.widthOverMin}`}
+                                </span>
+                            </>
+                        )} | bits: {res.members[0].bits}
+                    </div>
+                    {res.catMatch && (
+                        <span style={{padding:'2px 6px', background:'rgba(34,211,238,.15)', borderRadius:'3px', color:'var(--cyan)', fontSize:'10px'}}>
+                            catalog k={res.k} #{res.catMatch.idx + 1}
+                            {res.catMatch.H_k != null && <> · H_k={res.catMatch.H_k}</>}
+                            {' · mod '}{res.catMatch.modulus}
+                        </span>
+                    )}
+                    {res.modCheck && (
+                        <span style={{padding:'2px 6px', background:'rgba(34,211,238,.10)', borderRadius:'3px', color:'var(--cyan)', fontSize:'10px'}}>
+                            base mod {res.modCheck.modulus} = {res.modCheck.baseMod}
+                        </span>
+                    )}
+                    {res.wd && (() => {
+                        const showRange = res.catMinP && res.wd.breakP === null && res.catMinP <= res.wd.deepestP;
+                        return (
+                        <span style={{padding:'2px 6px',
+                                      background: res.wd.breakP === null ? 'rgba(52,211,153,.15)' : 'rgba(251,191,36,.15)',
+                                      borderRadius:'3px',
+                                      color: res.wd.breakP === null ? 'var(--green)' : 'var(--yellow)',
+                                      fontSize:'10px'}}
+                              title={res.wd.breakP === null
+                                ? `Base passes admissibility at every tested prime ≤ ${res.wd.chain[res.wd.chain.length-1].prime}; search-side wheel could plausibly be any primorial in [${res.catMinP ? res.catMinP + '#' : 'catalog min'}, ${res.wd.deepestP}#]`
+                                : `Base fails admissibility at ÷${res.wd.breakP}; consistent only with wheels ≤ ${res.wd.deepestP}#`}>
+                            {showRange
+                                ? `wheel ∈ [${res.catMinP}#, ${res.wd.deepestP}#] ✓`
+                                : `wheel ≤ ${res.wd.deepestP}#${res.wd.breakP === null ? ' ✓' : ` (breaks ÷${res.wd.breakP})`}`}
+                        </span>);
+                    })()}
+                    {res.trivialParent
+                        ? <span style={{padding:'2px 6px', background:'rgba(251,191,36,.15)', borderRadius:'3px', color:'var(--yellow)', fontSize:'10px'}}
+                                title={`Pattern${res.trivialParent.viaMirror ? "'s mirror" : ''} is a sub-tuple of catalog k=${res.trivialParent.k} #${res.trivialParent.idx+1} (offset shift +${res.trivialParent.shift}). Any prime k=${res.trivialParent.k}-tuplet matching that bigger pattern produces this k=${res.k} pattern for free — Luhn's "trivial" classification.`}>
+                            trivial ⊂ k={res.trivialParent.k}#{res.trivialParent.idx+1}
+                            {res.trivialParent.viaMirror ? ' (mirror)' : ''}
+                          </span>
+                        : <span style={{padding:'2px 6px', background:'rgba(52,211,153,.15)', borderRadius:'3px', color:'var(--green)', fontSize:'10px'}}
+                                title="No catalog pattern at higher k (k=2..28 loaded) contains this pattern or its mirror as a sub-tuple. Matches Luhn's pzktupel.de 'non-trivial known to given pattern' classification within our catalog scope — a record at this pattern is independent search effort, not derived from a larger-k discovery.">
+                            non-trivial
+                          </span>
+                    }
+                </div>
+
+                {/* ===== Overview row ===== */}
+                <div className="grid3">
+                    <CollapsiblePanel title="Base & Pattern" badge={`k=${res.k}`} bc="bg" forceOpen={expandAll||undefined}>
+                        <CopyBox value={res.base.toString()} label="base (dec)" />
+                        <CopyBox value={toHex(res.base)} label="base (hex)" />
+                        <P k="Bits" v={res.base.toString(2).length} />
+                        <P k="Digits" v={res.base.toString().length} />
+                        <P k="Width" v={res.width} />
+                        <P k="Density" v={`${(res.k/(res.width+1)*100).toFixed(1)}%`} />
+                        <P k="Source" v={res.ctx?.match?.source === 'custom' ? `custom @ line ${res.ctx.match.lineNo}` : (res.catMatch ? `catalog k=${res.k} #${res.catMatch.idx+1}` : '—')} />
+                    </CollapsiblePanel>
+                    <CollapsiblePanel title="Status" badge={res.fullKtuplet?'COMPLETE':'PARTIAL'} bc={res.fullKtuplet?'bg-g':'bg-y'} forceOpen={expandAll||undefined}>
+                        <P k="Members prime" v={`${res.primeCount}/${res.k}`} />
+                        <P k="Pattern admissible" v={res.isAdmissiblePattern ? 'YES' : 'NO'} />
+                        <P k="Base in admissible cell" v={res.baseAdmissibleAtAll ? 'YES' : 'NO'} />
+                        {res.modCheck && (
+                            <P k={`base mod ${res.modCheck.modulus}`} v={res.modCheck.baseMod} mono />
+                        )}
+                    </CollapsiblePanel>
+                    <CollapsiblePanel title="Residues" badge="base mod p" bc="bg-y" forceOpen={expandAll||undefined}>
+                        {RESIDUE_PRIMES.map(p => (
+                            <P key={p} k={`base mod ${p}`} v={res.baseResidueAt[p]} mono />
+                        ))}
+                    </CollapsiblePanel>
+                </div>
+
+                {/* ===== Pattern Catalog ===== */}
+                <div className="section-title">★ Pattern Catalog (at this k)</div>
+                <CatalogPanel res={res} forceOpen={expandAll||undefined} />
+
+                <div className="section-title">★ Wheel-depth Ladder</div>
+                <WheelDepthPanel res={res} forceOpen={expandAll||undefined} />
+
+                {res.density && <>
+                    <div className="section-title">★ Density at scale</div>
+                    <DensityPanel res={res} forceOpen={expandAll||undefined} />
+                </>}
+
+                {/* ===== Pattern visualization ===== */}
+                <div className="section-title">★ Pattern on Number Line</div>
+                <CollapsiblePanel title="Offsets visualized" badge={`width ${res.width}`} bc="bg" forceOpen={expandAll||undefined}>
+                    <NumberLinePanel res={res} />
+                </CollapsiblePanel>
+
+                {/* ===== Members ===== */}
+                <div className="section-title">★ Tuple Members</div>
+                <CollapsiblePanel title="Members table" badge={`${res.primeCount}/${res.k} prime`} bc={res.fullKtuplet?'bg-g':'bg-y'} forceOpen={expandAll||undefined}>
+                    <MembersPanel res={res} fmt={fmt} />
+                </CollapsiblePanel>
+
+                {/* ===== Admissibility ===== */}
+                <div className="section-title">★ CRT Admissibility Grid</div>
+                <CollapsiblePanel
+                    title="Admissibility (rows = small primes, cols = base residue)"
+                    badge={res.isAdmissiblePattern?'admissible':'INADMISSIBLE'}
+                    bc={res.isAdmissiblePattern?'bg-g':'bg-r'}
+                    forceOpen={expandAll||undefined}>
+                    <AdmissibilityPanel res={res} />
+                </CollapsiblePanel>
+
+                {/* ===== Composite proximity (member-centric) ===== */}
+                <div className="section-title">★ Composite Proximity (member-centric ±range)</div>
+                <CollapsiblePanel
+                    title="Smallest prime factor around each member ± range (±4 to ±100)"
+                    bc="bg-o" forceOpen={expandAll||undefined}>
+                    <ProximityPanel res={res} fmt={fmt} />
+                </CollapsiblePanel>
+
+                {/* ===== Inter-member composite texture ===== */}
+                <div className="section-title">★ Inter-Member Composite Texture (positions inside the tuple span)</div>
+                <CollapsiblePanel
+                    title={`Smallest prime factor at every position from base+0 to base+${res.width}`}
+                    bc="bg-o" forceOpen={expandAll||undefined}>
+                    <InterMemberCompositesPanel res={res} fmt={fmt} />
+                </CollapsiblePanel>
+
+                {/* ===== About / parallel-to-CC info ===== */}
+                <div className="section-title">About</div>
+                <div style={{fontSize:'10px', color:'var(--tx1)', background:'var(--bg2)', padding:'8px',
+                             borderRadius:'4px', lineHeight:1.5}}>
+                    <strong style={{color:'var(--cyan)'}}>Sieve architecture transfer.</strong> Same primorial wheel,
+                    same bitmap structure, same GPU/CPU split as the Cunningham-chain pipeline. The substitution:
+                    CC checks "does residue class survive multiplication-by-2 chain extension," k-tuple checks
+                    "does residue class survive additive-offset constellation."<br/><br/>
+                    <strong style={{color:'var(--cyan)'}}>What's different.</strong> Admissibility theory replaces
+                    chain-existence theory. For CC the question is "will this candidate extend to length L"; for
+                    k-tuples the question is "is this pattern admissible at all, and if so how rare is it locally."
+                    Factorization-depth structure also differs: CC's d1/d2/d3/d4 layers across links are algebraically
+                    related (each link doubled from previous); k-tuple's layers across members are algebraically
+                    independent (different additive offsets). Whether empirical crossovers exist despite that
+                    independence is an open question this analyzer is meant to explore.
+                </div>
+            </>)}
+
+            <div className="footer">
+                <div style={{marginBottom:'4px'}}>
+                    <strong style={{color:'var(--cyan)'}}>Prime k-Tuplet Analyzer v3.1</strong>
+                </div>
+                <div>
+                    © 2026 <a href="https://be.linkedin.com/in/nenadmicic" target="_blank">Nenad Mićić</a>
+                </div>
+                <div style={{marginTop:'4px'}}>
+                    License: <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache-2.0</a> |
+                    Data: pzktupel.de/Top10.php
+                </div>
+            </div>
+        </div>
+    );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>

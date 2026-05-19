@@ -1,0 +1,12 @@
+{
+  "k": 23,
+  "diameter": 94,
+  "canonical_only": true,
+  "total_count": 1,
+  "elapsed_s": 0.794,
+  "threads": 8,
+  "tool": "pattern_enum.c v1.1",
+  "patterns": [
+    {"offsets": [0, 4, 6, 10, 12, 16, 24, 30, 34, 40, 42, 46, 52, 54, 60, 66, 70, 72, 76, 82, 84, 90, 94], "name_suggestion": "KT23_P0"}
+  ]
+}
